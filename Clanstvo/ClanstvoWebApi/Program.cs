@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Environment.IsDevelopment()
  ? builder.Configuration.AddJsonFile("appsettings.Development.json").Build()
  : builder.Configuration.AddJsonFile("appsettings.json").Build();
-
+//version updated
 
 // EDIT
 // register the DbContext - EF ORM
