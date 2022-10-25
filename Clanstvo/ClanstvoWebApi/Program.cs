@@ -8,6 +8,8 @@ IConfiguration configuration = builder.Environment.IsDevelopment()
  ? builder.Configuration.AddJsonFile("appsettings.Development.json").Build()
  : builder.Configuration.AddJsonFile("appsettings.json").Build();
 
+
+// EDIT
 // register the DbContext - EF ORM
 // this allows the DbContext to be injected
 builder.Services.AddDbContext<ClanstvoContext>(options =>
