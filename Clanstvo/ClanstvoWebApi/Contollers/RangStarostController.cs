@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ClanstvoWebApi.Data;
 using ClanstvoWebApi.Data.DbModels;
 
-namespace ClanstvoWebApi.Properties
+namespace ClanstvoWebApi.Contollers
 {
     [Route("api/[controller]")]
     [ApiController]
