@@ -9,6 +9,8 @@ using ClanstvoWebApi.Data;
 using ClanstvoWebApi.Data.DbModels;
 
 namespace ClanstvoWebApi.Contollers
+
+    // made by Luka Slugečić, Anton Macan, Bruno Rački
 {
     [Route("api/[controller]")]
     [ApiController]
