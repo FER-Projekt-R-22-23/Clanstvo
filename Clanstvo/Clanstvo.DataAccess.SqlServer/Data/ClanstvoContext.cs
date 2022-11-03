@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using ClanstvoWebApi.Data.DbModels;
+using Clanstvo.DataAccess.SqlServer.Data.DbModels;
 
 namespace ClanstvoWebApi.Data
 {
