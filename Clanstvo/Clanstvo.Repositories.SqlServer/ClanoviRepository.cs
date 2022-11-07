@@ -46,6 +46,8 @@ public class ClanoviRepository : IClanoviRepository<int, Clanovi>
         var model = _dbContext.Clanovi
                               .Include(clan => clan.ClanRangZasluga)
                               .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
+                              .Include(clan => clan.ClanRangStarost)
+                              .ThenInclude(clanRangStarost => clanRangStarost.RangStarost)
                               .AsNoTracking()
                               .FirstOrDefault(clan => clan.Id.Equals(id)); // give me the first or null; substitute for .Where()
                                                                                // single or default throws an exception if more than one element meets the criteria
@@ -68,6 +70,8 @@ public class ClanoviRepository : IClanoviRepository<int, Clanovi>
         var models = _dbContext.Clanovi
                                .Include(clan => clan.ClanRangZasluga)
                                .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
+                               .Include(clan => clan.ClanRangStarost)
+                               .ThenInclude(clanRangStarost => clanRangStarost.RangStarost)
                                .ToList();
 
         return models;
