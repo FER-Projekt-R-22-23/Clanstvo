@@ -5,7 +5,7 @@
   "DefaultDacpacSchema": null,
   "FilterSchemas": false,
   "IncludeConnectionString": false,
-  "ModelNamespace": null,
+  "ModelNamespace": "",
   "OutputContextPath": "Data",
   "OutputPath": "Data\/DbModels",
   "PreserveCasingWithRegex": true,

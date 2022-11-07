@@ -1,4 +1,4 @@
-﻿using Clanstvo.Repositoires;
+﻿using Clanstvo.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Clanstvo.DataAccess.SqlServer.Data.DbModels;
@@ -45,7 +45,7 @@ public class ClanoviController : ControllerBase
             return BadRequest();
         }
 
-        if (!_clanoviRepository.Exsist(id))
+        if (!_clanoviRepository.Exists(id))
         {
             return NotFound();
         }

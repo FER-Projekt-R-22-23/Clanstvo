@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace ClanstvoWebApi.Data.DbModels
+namespace Clanstvo.DataAccess.SqlServer.Data.DbModels
 {
     public partial class RangZasluga
     {

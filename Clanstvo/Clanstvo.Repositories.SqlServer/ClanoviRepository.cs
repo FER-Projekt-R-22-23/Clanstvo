@@ -41,7 +41,7 @@ public class ClanoviRepository : IClanoviRepository<int, Clanovi>
             : Options.None<Clanovi>();
     }
 
-    public Option<Person> GetAggregate(int id)
+    public Option<Clanovi> GetAggregate(int id)
     {
         var model = _dbContext.Clanovi
                               .Include(clan => clan.ClanRangZasluga)
@@ -97,7 +97,7 @@ public class ClanoviRepository : IClanoviRepository<int, Clanovi>
 
         if (model is not null)
         {
-            _dbContext.People.Remove(model);
+            _dbContext.Clanovi.Remove(model);
 
             return _dbContext.SaveChanges() > 0;
         }
@@ -123,7 +123,7 @@ public class ClanoviRepository : IClanoviRepository<int, Clanovi>
 
     public bool UpdateAggregate(Clanovi model)
     {
-        if (_dbContext.People.Update(model).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+        if (_dbContext.Clanovi.Update(model).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
         {
             var isSuccess = _dbContext.SaveChanges() > 0;
 
