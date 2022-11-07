@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ClanstvoWebApi.Data;
-using ClanstvoWebApi.Data.DbModels;
+using Clanstvo.DataAccess.SqlServer.Data.DbModels;
 
 namespace ClanstvoWebApi.Contollers
 

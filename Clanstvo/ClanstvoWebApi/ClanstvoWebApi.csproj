@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -6,11 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="efpt.config.json" />
-  </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BaseLibrary" Version="1.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
       <PrivateAssets>all</PrivateAssets>
@@ -21,5 +19,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Clanstvo.Repositories.SqlServer\Clanstvo.Repositories.SqlServer.csproj" />
+		<ProjectReference Include="..\Clanstvo.Repositories\Clanstvo.Repositories.csproj" />
+	</ItemGroup>
 
 </Project>

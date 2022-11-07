@@ -1,4 +1,8 @@
-using ClanstvoWebApi.Data;
+using Clanstvo.Repositories;
+using Clanstvo.Repositories.SqlServer;
+using Clanstvo.DataAccess.SqlServer.Data;
+using Clanstvo.DataAccess.SqlServer.Data.DbModels;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +18,7 @@ IConfiguration configuration = builder.Environment.IsDevelopment()
 // this allows the DbContext to be injected
 builder.Services.AddDbContext<ClanstvoContext>(options =>
 options.UseSqlServer(configuration.GetConnectionString("ClanstvoDB")));
+builder.Services.AddTransient<IClanoviRepository<int, Clanstvo>, ClanoviRepository>();
 
 // Add services to the container.
 
