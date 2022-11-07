@@ -1,34 +1,34 @@
 ﻿using Clanstvo.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Clanstvo.DataAccess.SqlServer.Data.DbModels;
+using ClanstvoWebApi.DTOs;
+using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
+using Clanstvo.Commons;
 
 namespace ClanstvoWebApi.Controllers;
-
 [Route("api/[controller]")]
 [ApiController]
 public class ClanoviController : ControllerBase
 {
-    private readonly IClanoviRepository<int, Clanovi> _clanoviRepository;
+    private readonly IClanoviRepository<int, DbModels.Clanovi> _clanoviRepository;
 
 
-    public ClanoviController(IClanoviRepository<int, Clanovi> clanoviRepository)
+    public ClanoviController(IClanoviRepository<int, DbModels.Clanovi> clanoviRepository)
     {
         _clanoviRepository = clanoviRepository;
     }
 
     // GET: api/Clanovi
     [HttpGet]
-    public ActionResult<Clanovi> GetClanovi()
+    public ActionResult<IEnumerable<Clanovi>> GetAllClanovi()
     {
-        return Ok(_clanoviRepository.GetAll());
+        return Ok(_clanoviRepository.GetAll().Select(DtoMapping.toDto));
     }
 
     // GET: api/Clanovi/5
     [HttpGet("{id}")]
     public ActionResult<Clanovi> GetClanovi(int id)
     {
-        var clanoviOption = _clanoviRepository.GetAggregate(id);
+        var clanoviOption = _clanoviRepository.Get(id).Map(DtoMapping.toDto);
 
         return clanoviOption
             ? Ok(clanoviOption.Data)
@@ -40,6 +40,11 @@ public class ClanoviController : ControllerBase
     [HttpPut("{id}")]
     public IActionResult EditClanovi(int id, Clanovi clanovi)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         if (id != clanovi.Id)
         {
             return BadRequest();
@@ -50,8 +55,8 @@ public class ClanoviController : ControllerBase
             return NotFound();
         }
 
-        return _clanoviRepository.Update(clanovi)
-            ? AcceptedAtAction("EditClanovi", clanovi)
+        return _clanoviRepository.Update(clanovi.ToDbModel())
+            ? AcceptedAtAction("EditPerson", clanovi)
             : StatusCode(500);
     }
 
@@ -60,8 +65,13 @@ public class ClanoviController : ControllerBase
     [HttpPost]
     public ActionResult<Clanovi> CreateClanovi(Clanovi clanovi)
     {
-        return _clanoviRepository.Insert(clanovi)
-            ? CreatedAtAction("GetClanovi", new {id = clanovi.Id}, clanovi)
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        return _clanoviRepository.Insert(clanovi.ToDbModel())
+            ? CreatedAtAction("GetClanovi", new { id = clanovi.Id }, clanovi)
             : StatusCode(500);
     }
 

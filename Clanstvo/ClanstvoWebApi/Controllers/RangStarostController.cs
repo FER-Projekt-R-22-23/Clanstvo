@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Clanstvo.DataAccess.SqlServer.Data.DbModels;
+using Clanstvo.Repositories;
+using ClanstvoWebApi.DTOs;
+using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
+using Clanstvo.Commons;
 
 namespace ClanstvoWebApi.Contollers
 
@@ -15,95 +13,81 @@ namespace ClanstvoWebApi.Contollers
     [ApiController]
     public class RangStarostController : ControllerBase
     {
-        private readonly ClanstvoContext _context;
+        private readonly IRangStarostRepository<int, DbModels.RangStarost> _rangStarostRepository;
 
-        public RangStarostController(ClanstvoContext context)
+        public RangStarostController(IRangStarostRepository<int, DbModels.RangStarost> context)
         {
-            _context = context;
+            _rangStarostRepository = context;
         }
 
         // GET: api/RangStarost
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RangStarost>>> GetRangStarost()
+        public ActionResult<IEnumerable<RangStarost>> GetAllRangStarost()
         {
-            return await _context.RangStarost.ToListAsync();
+            return Ok(_rangStarostRepository.GetAll().Select(DtoMapping.ToDto));
         }
 
         // GET: api/RangStarost/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RangStarost>> GetRangStarost(int id)
+        public ActionResult<RangStarost> GetRangStarost(int id)
         {
-            var rangStarost = await _context.RangStarost.FindAsync(id);
+            var rangStarost = _rangStarostRepository.Get(id).Map(DtoMapping.ToDto);
 
-            if (rangStarost == null)
-            {
-                return NotFound();
-            }
-
-            return rangStarost;
+            return rangStarostOption
+                ? Ok(rangStarostOption.Data)
+                : NotFound();
         }
 
         // PUT: api/RangStarost/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRangStarost(int id, RangStarost rangStarost)
+        public IActionResult EditRangStarost(int id, RangStarost rangStarost)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (id != rangStarost.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(rangStarost).State = EntityState.Modified;
-
-            try
+            if (!_rangStarostRepository.Exists(id))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RangStarostExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
-            return NoContent();
+            return _rangStarostRepository.Update(rangStarost.ToDbModel())
+                ? AcceptedAtAction("EditRangStarost", rangStarost)
+                : StatusCode(500);
         }
 
         // POST: api/RangStarost
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<RangStarost>> PostRangStarost(RangStarost rangStarost)
+        public ActionResult<RangStarost> CreateRangStarost(RangStarost rangStarost)
         {
-            _context.RangStarost.Add(rangStarost);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetRangStarost", new { id = rangStarost.Id }, rangStarost);
+            return _rangStarostRepository.Insert(rangStarost.ToDbModel())
+                ? CreatedAtAction("GetRangStarost", new { id = rangStarost.Id }, rangStarost)
+                : StatusCode(500);
         }
 
         // DELETE: api/RangStarost/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRangStarost(int id)
+        public IActionResult DeleteRangStarost(int id)
         {
-            var rangStarost = await _context.RangStarost.FindAsync(id);
-            if (rangStarost == null)
-            {
+            if (!_rangStarostRepository.Exists(id))
                 return NotFound();
-            }
 
-            _context.RangStarost.Remove(rangStarost);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool RangStarostExists(int id)
-        {
-            return _context.RangStarost.Any(e => e.Id == id);
+            return _rangStarostRepository.Remove(id)
+                ? NoContent()
+                : StatusCode(500);
         }
     }
 }

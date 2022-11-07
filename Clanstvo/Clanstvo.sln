@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClanstvoWebApi", "ClanstvoWebApi\ClanstvoWebApi.csproj", "{BD08CD53-1795-4CD9-89E7-2440089BEC64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClanstvoWebApi", "ClanstvoWebApi\ClanstvoWebApi.csproj", "{BD08CD53-1795-4CD9-89E7-2440089BEC64}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clanstvo.Commons", "Clanstvo.Commons\Clanstvo.Commons.csproj", "{41D06096-437E-4816-9C6B-9D5DD167F524}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clanstvo.Repositories", "Clanstvo.Repositories\Clanstvo.Repositories.csproj", "{15884AF7-5B32-4E64-B322-0D6B37474A50}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clanstvo.Repositories.SqlServer", "Clanstvo.Repositories.SqlServer\Clanstvo.Repositories.SqlServer.csproj", "{5CE347F9-9B81-447F-86B6-710F35C70727}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clanstvo.Domain", "Clanstvo.Domain\Clanstvo.Domain.csproj", "{3AE31430-3555-4D49-B5AC-54ED35E54647}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{5CE347F9-9B81-447F-86B6-710F35C70727}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CE347F9-9B81-447F-86B6-710F35C70727}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CE347F9-9B81-447F-86B6-710F35C70727}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AE31430-3555-4D49-B5AC-54ED35E54647}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AE31430-3555-4D49-B5AC-54ED35E54647}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AE31430-3555-4D49-B5AC-54ED35E54647}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AE31430-3555-4D49-B5AC-54ED35E54647}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

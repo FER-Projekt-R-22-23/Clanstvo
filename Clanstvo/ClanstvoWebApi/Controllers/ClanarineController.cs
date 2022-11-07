@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Clanstvo.DataAccess.SqlServer.Data.DbModels;
+using Clanstvo.Repositories;
+using ClanstvoWebApi.DTOs;
+using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
+using Clanstvo.Commons;
 
 namespace ClanstvoWebApi.Controllers
 {
@@ -13,95 +11,81 @@ namespace ClanstvoWebApi.Controllers
     [ApiController]
     public class ClanarineController : ControllerBase
     {
-        private readonly ClanstvoContext _context;
+        private readonly IClanarineRepository<int, DbModels.Clanarine> _clanarineRepository;
 
-        public ClanarineController(ClanstvoContext context)
+        public ClanarineController(IClanarineRepository<int, DbModels.Clanarine> context)
         {
-            _context = context;
+            _clanarineRepository = context;
         }
 
         // GET: api/Clanarine
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Clanarine>>> GetClanarine()
+        public ActionResult<IEnumerable<Clanarine>> GetAllClanarine()
         {
-            return await _context.Clanarine.ToListAsync();
+            return Ok(_clanarineRepository.GetAll().Select(DtoMapping.ToDto));
         }
 
         // GET: api/Clanarine/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Clanarine>> GetClanarine(int id)
+        public ActionResult<Clanarine> GetClanarine(int id)
         {
-            var clanarine = await _context.Clanarine.FindAsync(id);
+            var Clanarine = _clanarineRepository.Get(id).Map(DtoMapping.ToDto);
 
-            if (clanarine == null)
-            {
-                return NotFound();
-            }
-
-            return clanarine;
+            return clanarineOption
+                ? Ok(clanarineOption.Data)
+                : NotFound();
         }
 
         // PUT: api/Clanarine/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutClanarine(int id, Clanarine clanarine)
+        public IActionResult EditRangStarost(int id, Clanarine clanarine)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (id != clanarine.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(clanarine).State = EntityState.Modified;
-
-            try
+            if (!_clanarineRepository.Exists(id))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClanarineExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
-            return NoContent();
+            return _clanarineRepository.Update(clanarine.ToDbModel())
+                ? AcceptedAtAction("EditClanarine", clanarine)
+                : StatusCode(500);
         }
 
         // POST: api/Clanarine
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Clanarine>> PostClanarine(Clanarine clanarine)
+        public ActionResult<Clanarine> CreateClanarine(Clanarine clanarine)
         {
-            _context.Clanarine.Add(clanarine);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetClanarine", new { id = clanarine.Id }, clanarine);
+            return _clanarineRepository.Insert(clanarine.ToDbModel())
+                ? CreatedAtAction("GetClanarine", new { id = clanarine.Id }, clanarine)
+                : StatusCode(500);
         }
 
         // DELETE: api/Clanarine/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteClanarine(int id)
+        public IActionResult DeleteClanarine(int id)
         {
-            var clanarine = await _context.Clanarine.FindAsync(id);
-            if (clanarine == null)
-            {
+            if (!_clanarineRepository.Exists(id))
                 return NotFound();
-            }
 
-            _context.Clanarine.Remove(clanarine);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ClanarineExists(int id)
-        {
-            return _context.Clanarine.Any(e => e.Id == id);
+            return _clanarineRepository.Remove(id)
+                ? NoContent()
+                : StatusCode(500);
         }
     }
 }

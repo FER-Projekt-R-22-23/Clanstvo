@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Clanstvo.DataAccess.SqlServer.Data.DbModels;
+using Clanstvo.Repositories;
+using ClanstvoWebApi.DTOs;
+using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
+using Clanstvo.Commons;
 
 namespace ClanstvoWebApi.Controllers
 {
@@ -13,95 +11,81 @@ namespace ClanstvoWebApi.Controllers
     [ApiController]
     public class RangZaslugaController : ControllerBase
     {
-        private readonly ClanstvoContext _context;
+        private readonly IRangZaslugatRepository<int, DbModels.RangZasluga> _rangZaslugaRepository;
 
-        public RangZaslugaController(ClanstvoContext context)
+        public RangZaslugaController(IRangZaslugatRepository<int, DbModels.RangZasluga> context)
         {
-            _context = context;
+            _rangZaslugaRepository = context;
         }
 
         // GET: api/RangZasluga
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RangZasluga>>> GetRangZasluga()
+        public ActionResult<IEnumerable<RangZasluga>> GetAllRangZasluga()
         {
-            return await _context.RangZasluga.ToListAsync();
+            return Ok(_rangZaslugaRepository.GetAll().Select(DtoMapping.ToDto));
         }
 
         // GET: api/RangZasluga/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RangZasluga>> GetRangZasluga(int id)
+        public ActionResult<RangZasluga> GetRangZasluga(int id)
         {
-            var rangZasluga = await _context.RangZasluga.FindAsync(id);
+            var rangZasluga =  _rangZaslugaRepository.Get(id).Map(DtoMapping.ToDto);
 
-            if (rangZasluga == null)
-            {
-                return NotFound();
-            }
-
-            return rangZasluga;
+            return rangZaslugaOption
+                ? Ok(rangZaslugaOption.Data)
+                : NotFound();
         }
 
         // PUT: api/RangZasluga/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRangZasluga(int id, RangZasluga rangZasluga)
+        public IActionResult EditRangZasluga(int id, RangZasluga rangZasluga)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (id != rangZasluga.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(rangZasluga).State = EntityState.Modified;
-
-            try
+            if (!_rangZaslugaRepository.Exists(id))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RangZaslugaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
-            return NoContent();
+            return _rangZaslugaRepository.Update(rangZasluga.ToDbModel())
+                ? AcceptedAtAction("EditRangZasluga", rangZasluga)
+                : StatusCode(500);
         }
 
         // POST: api/RangZasluga
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<RangZasluga>> PostRangZasluga(RangZasluga rangZasluga)
+        public ActionResult<RangZasluga> CreateRole(RangZasluga rangZasluga)
         {
-            _context.RangZasluga.Add(rangZasluga);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetRangZasluga", new { id = rangZasluga.Id }, rangZasluga);
+            return _rangZaslugaRepository.Insert(rangZasluga.ToDbModel())
+                ? CreatedAtAction("GetRangZasluga", new { id = rangZasluga.Id }, rangZasluga)
+                : StatusCode(500);
         }
 
         // DELETE: api/RangZasluga/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRangZasluga(int id)
+        public IActionResult DeleteRole(int id)
         {
-            var rangZasluga = await _context.RangZasluga.FindAsync(id);
-            if (rangZasluga == null)
-            {
+            if (!_rangZaslugaRepository.Exists(id))
                 return NotFound();
-            }
 
-            _context.RangZasluga.Remove(rangZasluga);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool RangZaslugaExists(int id)
-        {
-            return _context.RangZasluga.Any(e => e.Id == id);
+            return _rangZaslugaRepository.Remove(id)
+                ? NoContent()
+                : StatusCode(500);
         }
     }
 }

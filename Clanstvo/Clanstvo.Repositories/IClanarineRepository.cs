@@ -1,10 +1,10 @@
 namespace Clanstvo.Repositories;
 
 /// <summary>
-/// Facade interface for a Person repository
+/// Facade interface for a Clanarine repository
 /// </summary>
 /// <typeparam name="TKey"></typeparam>
 /// <typeparam name="TModel"></typeparam>
-public interface IClanarineRepository<TKey, TModel> : IRepository<TKey, TModel>, IAggregateRepository<TKey, TModel>
+public interface IClanarineRepository<TKey, TModel> : IRepository<TKey, TModel>
 {
 }

@@ -1,7 +1,7 @@
 ﻿namespace Clanstvo.Repositories;
 
 /// <summary>
-/// Facade interface for a Person repository
+/// Facade interface for a RangStarost repository
 /// </summary>
 /// <typeparam name="TKey"></typeparam>
 /// <typeparam name="TModel"></typeparam>
