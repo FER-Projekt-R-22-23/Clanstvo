@@ -29,7 +29,7 @@ namespace ClanstvoWebApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<Clanarine> GetClanarine(int id)
         {
-            var Clanarine = _clanarineRepository.Get(id).Map(DtoMapping.ToDto);
+            var clanarineOption = _clanarineRepository.Get(id).Map(DtoMapping.ToDto);
 
             return clanarineOption
                 ? Ok(clanarineOption.Data)

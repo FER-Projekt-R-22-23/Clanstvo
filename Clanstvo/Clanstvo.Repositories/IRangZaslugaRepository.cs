@@ -5,6 +5,6 @@ namespace Clanstvo.Repositories;
 /// </summary>
 /// <typeparam name="TKey"></typeparam>
 /// <typeparam name="TModel"></typeparam>
-public interface IRangZaslugatRepository<TKey, TModel> : IRepository<TKey, TModel>
+public interface IRangZaslugaRepository<TKey, TModel> : IRepository<TKey, TModel>
 {
 }

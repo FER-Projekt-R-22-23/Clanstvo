@@ -31,7 +31,7 @@ namespace ClanstvoWebApi.Contollers
         [HttpGet("{id}")]
         public ActionResult<RangStarost> GetRangStarost(int id)
         {
-            var rangStarost = _rangStarostRepository.Get(id).Map(DtoMapping.ToDto);
+            var rangStarostOption = _rangStarostRepository.Get(id).Map(DtoMapping.ToDto);
 
             return rangStarostOption
                 ? Ok(rangStarostOption.Data)

@@ -21,7 +21,6 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ExampleApp.Domain\ExampleApp.Domain.csproj" />
 		<ProjectReference Include="..\Clanstvo.Repositories.SqlServer\Clanstvo.Repositories.SqlServer.csproj" />
 		<ProjectReference Include="..\Clanstvo.Repositories\Clanstvo.Repositories.csproj" />
 	</ItemGroup>

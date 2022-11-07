@@ -11,9 +11,9 @@ namespace ClanstvoWebApi.Controllers
     [ApiController]
     public class RangZaslugaController : ControllerBase
     {
-        private readonly IRangZaslugatRepository<int, DbModels.RangZasluga> _rangZaslugaRepository;
+        private readonly IRangZaslugaRepository<int, DbModels.RangZasluga> _rangZaslugaRepository;
 
-        public RangZaslugaController(IRangZaslugatRepository<int, DbModels.RangZasluga> context)
+        public RangZaslugaController(IRangZaslugaRepository<int, DbModels.RangZasluga> context)
         {
             _rangZaslugaRepository = context;
         }
@@ -29,7 +29,7 @@ namespace ClanstvoWebApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<RangZasluga> GetRangZasluga(int id)
         {
-            var rangZasluga =  _rangZaslugaRepository.Get(id).Map(DtoMapping.ToDto);
+            var rangZaslugaOption =  _rangZaslugaRepository.Get(id).Map(DtoMapping.ToDto);
 
             return rangZaslugaOption
                 ? Ok(rangZaslugaOption.Data)

@@ -21,14 +21,14 @@ public class ClanoviController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<Clanovi>> GetAllClanovi()
     {
-        return Ok(_clanoviRepository.GetAll().Select(DtoMapping.toDto));
+        return Ok(_clanoviRepository.GetAll().Select(DtoMapping.ToDto));
     }
 
     // GET: api/Clanovi/5
     [HttpGet("{id}")]
     public ActionResult<Clanovi> GetClanovi(int id)
     {
-        var clanoviOption = _clanoviRepository.Get(id).Map(DtoMapping.toDto);
+        var clanoviOption = _clanoviRepository.Get(id).Map(DtoMapping.ToDto);
 
         return clanoviOption
             ? Ok(clanoviOption.Data)
