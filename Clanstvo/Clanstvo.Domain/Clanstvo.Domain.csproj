@@ -9,5 +9,9 @@
 	<ItemGroup>
 		<PackageReference Include="BaseLibrary" Version="1.0.0" />
 	</ItemGroup>
-	
+
+	<ItemGroup>
+		<ProjectReference Include="..\Clanstvo.Commons\Clanstvo.Commons.csproj" />
+	</ItemGroup>
+
 </Project>
