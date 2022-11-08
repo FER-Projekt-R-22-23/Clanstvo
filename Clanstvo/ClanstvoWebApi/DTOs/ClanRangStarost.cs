@@ -27,11 +27,11 @@ namespace ClanstvoWebApi.DTOs
                 Datum = clan.Datum
             };
 
-        public static DbModels.ClanRangStarost ToDbModel(this ClanRangStarost clan
+        public static DbModels.ClanRangStarost ToDbModel(this ClanRangStarost clan, int clanId
             )
             => new DbModels.ClanRangStarost()
             {
-                ClanId = clan.ClanId,
+                ClanId = clanId,
                 RangStarostId = clan.RangStarostId,
                 Datum = clan.Datum
             };
