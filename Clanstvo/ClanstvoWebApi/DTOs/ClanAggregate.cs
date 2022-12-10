@@ -44,7 +44,7 @@ namespace ClanstvoWebApi.DTOs
         [InverseProperty("Clan")]
         public virtual ICollection<ClanRangZasluga> ClanRangZasluga { get; set; }
         [InverseProperty("Clan")]
-        public virtual ICollection<Clanarina> Clanarine { get; set; }
+        public virtual ICollection<Clanarina> Clanarina { get; set; }
     }
     public static partial class DtoMapping
     {
@@ -66,7 +66,7 @@ namespace ClanstvoWebApi.DTOs
                 ClanRangZasluga = clan.ClanRangZasluga == null
                                 ? new List<ClanRangZasluga>()
                                 : clan.ClanRangZasluga.Select(pr => pr.ToDto()).ToList(),
-                Clanarine = clan.Clanarina == null
+                Clanarina = clan.Clanarina == null
                                 ? new List<Clanarina>()
                                 : clan.Clanarina.Select(pr => pr.ToDto()).ToList()
             };
@@ -84,7 +84,8 @@ namespace ClanstvoWebApi.DTOs
                 DatumMarama = clan.DatumMarama,
                 MjestoMarama = clan.MjestoMarama,
                 ClanRangStarost = clan.ClanRangStarost.Select(pr => pr.ToDbModel(clan.Id)).ToList(),
-                ClanRangZasluga = clan.ClanRangZasluga.Select(pr => pr.ToDbModel(clan.Id)).ToList()
+                ClanRangZasluga = clan.ClanRangZasluga.Select(pr => pr.ToDbModel(clan.Id)).ToList(),
+                Clanarina = clan.Clanarina.Select(pr => pr.ToDbModel()).ToList()
             };
     }
 }

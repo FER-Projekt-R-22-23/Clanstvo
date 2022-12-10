@@ -28,12 +28,23 @@ public class ClanController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Clan> GetClan(int id)
     {
-        var clanoviOption = _clanRepository.Get(id).Map(DtoMapping.ToDto);
+        var clanOption = _clanRepository.Get(id).Map(DtoMapping.ToDto);
 
-        return clanoviOption
-            ? Ok(clanoviOption.Data)
+        return clanOption
+            ? Ok(clanOption.Data)
             : NotFound();
     }
+
+    [HttpGet("/Aggregate/{id}")]
+    public ActionResult<ClanAggregate> GetPersonAggregate(int id)
+    {
+        var clanOption = _clanRepository.GetAggregate(id).Map(DtoMapping.ToAggregateDto);
+
+        return clanOption
+           ? Ok(clanOption.Data)
+           : NotFound();
+    }
+
 
     // PUT: api/Clan/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

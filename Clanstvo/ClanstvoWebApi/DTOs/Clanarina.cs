@@ -35,15 +35,15 @@ namespace ClanstvoWebApi.DTOs
                 Datum = clanarina.Datum
             };
 
-        public static DbModels.Clanarina ToDbModel(this Clanarina clanarine)
+        public static DbModels.Clanarina ToDbModel(this Clanarina clanarina)
             => new DbModels.Clanarina()
             {
-                Id = clanarine.Id,
-                Placenost = clanarine.Placenost,
-                Iznos = clanarine.Iznos,
-                Godina = clanarine.Godina,
-                ClanId = clanarine.ClanId,
-                Datum = clanarine.Datum
+                Id = clanarina.Id,
+                Placenost = clanarina.Placenost,
+                Iznos = clanarina.Iznos,
+                Godina = clanarina.Godina,
+                ClanId = clanarina.ClanId,
+                Datum = clanarina.Datum
             };
     }
 }
