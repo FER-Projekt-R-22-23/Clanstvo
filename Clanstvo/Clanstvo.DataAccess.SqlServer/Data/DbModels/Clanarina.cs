@@ -8,20 +8,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClanstvoWebApi.Data.DbModels
 {
-    public partial class ClanRangZasluga
+    public partial class Clanarina
     {
         [Key]
+        public int Id { get; set; }
+        public bool Placenost { get; set; }
+        [Column(TypeName = "numeric(18, 2)")]
+        public decimal Iznos { get; set; }
+        public int Godina { get; set; }
         public int ClanId { get; set; }
-        [Key]
-        public int RangZaslugaId { get; set; }
         [Column(TypeName = "date")]
-        public DateTime Datum { get; set; }
+        public DateTime? Datum { get; set; }
 
         [ForeignKey("ClanId")]
-        [InverseProperty("ClanRangZasluga")]
+        [InverseProperty("Clanarina")]
         public virtual Clan Clan { get; set; }
-        [ForeignKey("RangZaslugaId")]
-        [InverseProperty("ClanRangZasluga")]
-        public virtual RangZasluga RangZasluga { get; set; }
     }
 }
