@@ -48,6 +48,7 @@ public class ClanRepository : IClanRepository<int, Clan>
                               .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
                               .Include(clan => clan.ClanRangStarost)
                               .ThenInclude(clanRangStarost => clanRangStarost.RangStarost)
+                              .Include(clan => clan.Clanarina)
                               .AsNoTracking()
                               .FirstOrDefault(clan => clan.Id.Equals(id)); // give me the first or null; substitute for .Where()
                                                                            // single or default throws an exception if more than one element meets the criteria
