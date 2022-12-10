@@ -1,6 +1,8 @@
-﻿using BaseLibrary;
-using Clanstvo.Commons;
-using System.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Clanstvo.Domain.Models;
 public class Clan : AggregateRoot<int>
@@ -23,8 +25,8 @@ public class Clan : AggregateRoot<int>
     public DateTime? DatumMarama { get => _datumMarama; set => _datumMarama = value; }
     public string? MjestoMarama { get => _mjestoMarama; set => _mjestoMarama = value; }
 
-    public Clan(int id, string ime, string prezime, DateTime datumRodenja, 
-                      string slika, bool imaMaramu, DateTime datumMarama, string mjestoMarama  ) : base(id)
+    public Clan(int id, string ime, string prezime, DateTime datumRodenja,
+                      string slika,string adresa, bool imaMaramu, DateTime datumMarama, string mjestoMarama) : base(id)
     {
         if (string.IsNullOrEmpty(ime))
         {
@@ -41,6 +43,11 @@ public class Clan : AggregateRoot<int>
             throw new ArgumentException($"'{nameof(datumRodenja)}' cannot be null or empty.", nameof(datumRodenja));
         }
 
+        if(string.IsNullOrEmpty(adresa))
+        {
+            throw new ArgumentException($"'{nameof(adresa)}' cannot be null or empty.", nameof(adresa));
+        }
+
 
         _ime = ime;
         _prezime = prezime;
@@ -49,7 +56,7 @@ public class Clan : AggregateRoot<int>
         _imaMaramu = imaMaramu;
         _datumMarama = datumMarama;
         _mjestoMarama = mjestoMarama;
-        
+
     }
 
     public override bool Equals(object? obj)
@@ -68,15 +75,19 @@ public class Clan : AggregateRoot<int>
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_id, _ime, _prezime, _datumRodenja, _slika, _imaMaramu, _datumRodenja, _mjestoMarama);
+        return HashCode.Combine(_ime, _prezime, _datumRodenja, _slika, _adresa, _imaMaramu, _datumRodenja, _mjestoMarama);
+        // bez _id u funkciji jer moze uzimati max 8 varijabli
     }
 
-    public override Result IsValid()
-        => Validation.Validate(
-            (() => _ime.Length <= 50, "Ime lenght must be less than 50 characters"),
-            (() => _prezime.Length <= 50, "Prezime lenght must be less than 50 characters"),
-            (() => !string.IsNullOrEmpty(_ime.Trim()), "Ime can't be null, empty, or whitespace"),
-            (() => !string.IsNullOrEmpty(_prezime.Trim()), "Prezime can't be null, empty, or whitespace"),
-            (() => datumRodenja == DateTime.MinValue, "DatumRodenja can't be default value")
-            );
 }
+
+
+    /* public override Result IsValid()
+         => Validation.Validate(
+             (() => _ime.Length <= 50, "Ime lenght must be less than 50 characters"),
+             (() => _prezime.Length <= 50, "Prezime lenght must be less than 50 characters"),
+             (() => !string.IsNullOrEmpty(_ime.Trim()), "Ime can't be null, empty, or whitespace"),
+             (() => !string.IsNullOrEmpty(_prezime.Trim()), "Prezime can't be null, empty, or whitespace")
+             (() => datumRodenja == DateTime.MinValue, "DatumRodenja can't be default value")
+             );
+     */

@@ -1,6 +1,8 @@
-﻿using BaseLibrary;
-using Clanstvo.Domain;
-using Clanstvo.Commons;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Clanstvo.Domain.Models;
 public class RangZasluga : Entity<int>
@@ -31,10 +33,12 @@ public class RangZasluga : Entity<int>
     {
         return HashCode.Combine(Id, Naziv);
     }
+}
 
-    public override Result IsValid()
+/*
+ *  public override Result IsValid()
         => Validation.Validate(
             (() => _naziv.Length <= 50, "RangZasluga naziv lenght must be less than 50 characters"),
             (() => !string.IsNullOrEmpty(_name.Trim()), "RangZasluga naziv can't be null, empty, or whitespace")
             );
-}
+*/

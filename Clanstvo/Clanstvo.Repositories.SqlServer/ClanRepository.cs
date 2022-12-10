@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Clanstvo.Repositories.SqlServer;
 
-public class ClanRepository : IClanRepository<int, Clan>
+public class ClanRepository : IClanRepository
 {
     private readonly ClanstvoContext _dbContext;
 

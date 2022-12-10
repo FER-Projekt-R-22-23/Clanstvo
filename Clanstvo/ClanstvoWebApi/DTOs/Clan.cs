@@ -12,22 +12,22 @@ namespace ClanstvoWebApi.DTOs
 
     public partial class Clan
     {
-        [Key]
         public int Id { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
+
+        [Required(ErrorMessage = "First name can't be null")]
+        [StringLength(50, ErrorMessage = "First name can't be longer than 50 characters")]
         public string Ime { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
+
+        [Required(ErrorMessage = "Last name can't be null")]
+        [StringLength(50, ErrorMessage = "Last name can't be longer than 50 characters")]
         public string Prezime { get; set; }
+
         [Column(TypeName = "date")]
         public DateTime DatumRodenja { get; set; }
         public byte[] Slika { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
+
+        [Required(ErrorMessage = "Address can't be null")]
+        [StringLength(50, ErrorMessage = "Address can't be longer than 50 characters")]
         public string Adresa { get; set; }
         public bool ImaMaramu { get; set; }
         [Column(TypeName = "date")]
@@ -66,6 +66,18 @@ namespace ClanstvoWebApi.DTOs
                 DatumMarama = clan.DatumMarama,
                 MjestoMarama = clan.MjestoMarama,
             };
+
+            /*=> new DomainModels.Clan(
+                clan.Id,
+                clan.Ime,
+                clan.Prezime,
+                clan.Slika,
+                clan.DatumRodenja,
+                clan.Adresa,
+                clan.ImaMaramu,
+                clan.DatumMarama,
+                clan.MjestoMarama,
+            )*/
     }
 }
 

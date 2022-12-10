@@ -1,10 +1,12 @@
+using Clanstvo.Domain.Models;
 namespace Clanstvo.Repositories;
 
 /// <summary>
-/// Facade interface for a Clanarine repository
+/// Facade interface for a Role repository
 /// </summary>
 /// <typeparam name="TKey"></typeparam>
-/// <typeparam name="TModel"></typeparam>
-public interface IClanarinaRepository<TKey, TModel> : IRepository<TKey, TModel>
+/// <typeparam name="TDomainModel"></typeparam>
+public interface IClanarinaRepository
+    : IRepository<int, Clanarina>
 {
 }

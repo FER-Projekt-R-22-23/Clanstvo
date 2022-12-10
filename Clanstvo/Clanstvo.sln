@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clanstvo.Repositories", "Cl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clanstvo.Repositories.SqlServer", "Clanstvo.Repositories.SqlServer\Clanstvo.Repositories.SqlServer.csproj", "{5CE347F9-9B81-447F-86B6-710F35C70727}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clanstvo.Domain", "Clanstvo.Domain\Clanstvo.Domain.csproj", "{31052F4B-D067-4E51-860B-D4F27A99D725}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{5CE347F9-9B81-447F-86B6-710F35C70727}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CE347F9-9B81-447F-86B6-710F35C70727}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CE347F9-9B81-447F-86B6-710F35C70727}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31052F4B-D067-4E51-860B-D4F27A99D725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31052F4B-D067-4E51-860B-D4F27A99D725}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31052F4B-D067-4E51-860B-D4F27A99D725}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31052F4B-D067-4E51-860B-D4F27A99D725}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

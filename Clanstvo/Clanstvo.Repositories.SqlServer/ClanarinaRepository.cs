@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Clanstvo.Repositories.SqlServer;
-public class ClanarinaRepository : IClanarinaRepository<int, Clanarina>
+public class ClanarinaRepository : IClanarinaRepository
 {
     private readonly ClanstvoContext _dbContext;
 

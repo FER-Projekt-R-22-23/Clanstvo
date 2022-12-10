@@ -12,10 +12,10 @@ namespace ClanstvoWebApi.DTOs
     {
         [Key]
         public int Id { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Naziv { get; set; }
+
+        [Required(ErrorMessage = "Role name can't be empty", AllowEmptyStrings = false)]
+        [StringLength(50, ErrorMessage = "Role name can't be longer than 50 characters")]
+        public string Naziv { get; set; } = string.Empty;
 
     }
     public static partial class DtoMapping
@@ -35,5 +35,10 @@ namespace ClanstvoWebApi.DTOs
                 Id = clan.Id,
                 Naziv = clan.Naziv,
             };
+
+        /* => new DomainModels.RangZasluga(
+               clan.Id,
+               clan.Naziv
+           ) */
     }
 }

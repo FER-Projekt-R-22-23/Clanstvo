@@ -17,7 +17,7 @@ namespace Clanstvo.Domain
 
         public TPrimKey Id => _id;
 
-        public abstract Result IsValid();
+        //public abstract Result IsValid();
 
         public override abstract bool Equals(object? other);
         public override abstract int GetHashCode();

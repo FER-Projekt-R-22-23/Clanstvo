@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Clanstvo.Repositories.SqlServer;
 
-public class RangStarostRepository : IRangStarostRepository<int, RangStarost>
+public class RangStarostRepository : IRangStarostRepository
 {
     private readonly ClanstvoContext _dbContext;
 

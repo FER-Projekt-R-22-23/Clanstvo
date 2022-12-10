@@ -45,5 +45,14 @@ namespace ClanstvoWebApi.DTOs
                 ClanId = clanarina.ClanId,
                 Datum = clanarina.Datum
             };
+
+           /* => new DomainModels.Clanarina(
+                clanarina.Id,
+                clanarina.Placenost,
+                clanarina.Iznos,
+                clanarina.Godina,
+                clanarina.ClanId,
+                clanarina.Datum
+            )*/
     }
 }

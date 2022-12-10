@@ -3,20 +3,20 @@ using Clanstvo.Commons;
 using System.Data;
 
 namespace Clanstvo.Domain.Models;
-public class Clanarina : AggregateRoot<int>
+public class Clanarina : Entity<int>
 {
     private bool _placenost;
     private float _iznos;
     private int _godina;
     private int _clanId;
-    private DateTime _datum;
+    private DateTime? _datum;
 
 
 
     public bool Placenost { get => _placenost; set => _placenost = value; }
     public float Iznos { get => _iznos; set => _iznos = value; }
     public int ClanId { get => _clanId; set => _clanId = value; }
-    public DateTime Datum { get => _datum; set => _datum = value; }
+    public DateTime? Datum { get => _datum; set => _datum = value; }
 
     public Clanarina(int id, bool placenost, float iznos, int godina, int clanId ,DateTime datum) : base(id)
     {
@@ -51,8 +51,11 @@ public class Clanarina : AggregateRoot<int>
         return HashCode.Combine(_id, _placenost, _iznos, _godina, _clanId ,_datum);
     }
 
+}
+
+/*
     public override Result IsValid()
         => Validation.Validate(
             (() => datum == DateTime.MinValue, "DatumRodenja can't be default value")
             );
-}
+*/

@@ -35,5 +35,9 @@ namespace ClanstvoWebApi.DTOs
                 RangStarostId = clan.RangStarostId,
                 Datum = clan.Datum
             };
+
+            /*=> DomainModels.ClanRangStarost(
+               // TO DO
+            )*/
     }
 }

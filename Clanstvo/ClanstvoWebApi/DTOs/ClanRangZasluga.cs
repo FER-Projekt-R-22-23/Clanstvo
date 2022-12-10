@@ -35,5 +35,9 @@ namespace ClanstvoWebApi.DTOs
                 RangZaslugaId = clan.RangZaslugaId,
                 Datum = clan.Datum
             };
+
+        /*=> DomainModels.ClanRangZasluga(
+              // TO DO
+           )*/
     }
 }
