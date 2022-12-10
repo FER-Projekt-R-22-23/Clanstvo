@@ -3,7 +3,7 @@ using Clanstvo.Commons;
 using System.Data;
 
 namespace Clanstvo.Domain.Models;
-public class Clanovi : AggregateRoot<int>
+public class Clan : AggregateRoot<int>
 {
     private string _ime;
     private string _prezime;
@@ -23,7 +23,7 @@ public class Clanovi : AggregateRoot<int>
     public DateTime? DatumMarama { get => _datumMarama; set => _datumMarama = value; }
     public string? MjestoMarama { get => _mjestoMarama; set => _mjestoMarama = value; }
 
-    public Clanovi(int id, string ime, string prezime, DateTime datumRodenja, 
+    public Clan(int id, string ime, string prezime, DateTime datumRodenja, 
                       string slika, bool imaMaramu, DateTime datumMarama, string mjestoMarama  ) : base(id)
     {
         if (string.IsNullOrEmpty(ime))
@@ -55,7 +55,7 @@ public class Clanovi : AggregateRoot<int>
     public override bool Equals(object? obj)
     {
         return obj is not null &&
-                obj is Clanovi clan &&
+                obj is Clan clan &&
                 _id == clan._id &&
                 _ime == clan._ime &&
                 _prezime == clan._prezime &&

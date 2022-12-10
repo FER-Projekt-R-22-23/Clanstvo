@@ -5,51 +5,51 @@ using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Clanstvo.Repositories.SqlServer;
-public class ClanarineRepository : IClanarineRepository<int, Clanarine>
+public class ClanarinaRepository : IClanarinaRepository<int, Clanarina>
 {
     private readonly ClanstvoContext _dbContext;
 
-    public ClanarineRepository(ClanstvoContext dbContext)
+    public ClanarinaRepository(ClanstvoContext dbContext)
     {
         _dbContext = dbContext;
     }
-    public bool Exists(Clanarine model)
+    public bool Exists(Clanarina model)
     {
-        return _dbContext.Clanarine
+        return _dbContext.Clanarina
                          .AsNoTracking()
                          .Contains(model);
     }
 
     public bool Exists(int id)
     {
-        var model = _dbContext.Clanarine.
+        var model = _dbContext.Clanarina.
                                 AsNoTracking().
                                 FirstOrDefault(clanarina => clanarina.Id.Equals(id));
         return model is not null;
     }
 
-    public Option<Clanarine> Get(int id)
+    public Option<Clanarina> Get(int id)
     {
-        var model = _dbContext.Clanarine
+        var model = _dbContext.Clanarina
                               .AsNoTracking()
                               .FirstOrDefault(clanarina => clanarina.Id.Equals(id));
 
         return model is not null
             ? Options.Some(model)
-            : Options.None<Clanarine>();
+            : Options.None<Clanarina>();
     }
 
-    public IEnumerable<Clanarine> GetAll()
+    public IEnumerable<Clanarina> GetAll()
     {
-        var models = _dbContext.Clanarine
+        var models = _dbContext.Clanarina
                                .ToList();
 
         return models;
     }
 
-    public bool Insert(Clanarine model)
+    public bool Insert(Clanarina model)
     {
-        if (_dbContext.Clanarine.Add(model).State == Microsoft.EntityFrameworkCore.EntityState.Added)
+        if (_dbContext.Clanarina.Add(model).State == Microsoft.EntityFrameworkCore.EntityState.Added)
         {
             var isSuccess = _dbContext.SaveChanges() > 0;
 
@@ -65,23 +65,23 @@ public class ClanarineRepository : IClanarineRepository<int, Clanarine>
 
     public bool Remove(int id)
     {
-        var model = _dbContext.Clanarine
+        var model = _dbContext.Clanarina
                                .AsNoTracking()
                                .FirstOrDefault(clanarina => clanarina.Id.Equals(id));
 
         if (model is not null)
         {
-            _dbContext.Clanarine.Remove(model);
+            _dbContext.Clanarina.Remove(model);
 
             return _dbContext.SaveChanges() > 0;
         }
         return false;
     }
 
-    public bool Update(Clanarine model)
+    public bool Update(Clanarina model)
     {
         // detach
-        if (_dbContext.Clanarine.Update(model).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+        if (_dbContext.Clanarina.Update(model).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
         {
             var isSuccess = _dbContext.SaveChanges() > 0;
 

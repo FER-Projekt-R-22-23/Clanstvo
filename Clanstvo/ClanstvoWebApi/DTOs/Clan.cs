@@ -10,7 +10,7 @@ namespace ClanstvoWebApi.DTOs
 {
 
 
-    public partial class Clanovi
+    public partial class Clan
     {
         [Key]
         public int Id { get; set; }
@@ -38,8 +38,8 @@ namespace ClanstvoWebApi.DTOs
     }
     public static partial class DtoMapping
     {
-        public static Clanovi ToDto(this DbModels.Clanovi clan)
-            => new Clanovi()
+        public static Clan ToDto(this DbModels.Clan clan)
+            => new Clan()
             {
                 Id = clan.Id,
                 Ime = clan.Ime,
@@ -52,9 +52,9 @@ namespace ClanstvoWebApi.DTOs
                 MjestoMarama = clan.MjestoMarama,
             };
 
-        public static DbModels.Clanovi ToDbModel(this Clanovi clan
+        public static DbModels.Clan ToDbModel(this Clan clan
             )
-            => new DbModels.Clanovi()
+            => new DbModels.Clan()
             {
                 Id = clan.Id,
                 Ime = clan.Ime,

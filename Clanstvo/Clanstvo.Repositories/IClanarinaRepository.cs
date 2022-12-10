@@ -5,6 +5,6 @@ namespace Clanstvo.Repositories;
 /// </summary>
 /// <typeparam name="TKey"></typeparam>
 /// <typeparam name="TModel"></typeparam>
-public interface IClanarineRepository<TKey, TModel> : IRepository<TKey, TModel>
+public interface IClanarinaRepository<TKey, TModel> : IRepository<TKey, TModel>
 {
 }

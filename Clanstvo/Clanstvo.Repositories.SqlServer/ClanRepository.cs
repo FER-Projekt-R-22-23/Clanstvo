@@ -1,4 +1,4 @@
-using Clanstvo.Commons;
+﻿using Clanstvo.Commons;
 using Clanstvo.DataAccess.SqlServer.Data;
 using Clanstvo.DataAccess.SqlServer.Data.DbModels;
 using Microsoft.EntityFrameworkCore;
@@ -6,68 +6,68 @@ using System.Collections.Generic;
 
 namespace Clanstvo.Repositories.SqlServer;
 
-public class ClanoviRepository : IClanoviRepository<int, Clanovi>
+public class ClanRepository : IClanRepository<int, Clan>
 {
     private readonly ClanstvoContext _dbContext;
 
-    public ClanoviRepository(ClanstvoContext dbContext)
+    public ClanRepository(ClanstvoContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public bool Exists(Clanovi model)
+    public bool Exists(Clan model)
     {
-        return _dbContext.Clanovi
+        return _dbContext.Clan
                          .AsNoTracking()
                          .Contains(model);
     }
 
     public bool Exists(int id)
     {
-        var model = _dbContext.Clanovi
+        var model = _dbContext.Clan
                               .AsNoTracking()
                               .FirstOrDefault(clan => clan.Id.Equals(id));
         return model is not null;
     }
 
-    public Option<Clanovi> Get(int id)
+    public Option<Clan> Get(int id)
     {
-        var model = _dbContext.Clanovi
+        var model = _dbContext.Clan
                               .AsNoTracking()
                               .FirstOrDefault(clan => clan.Id.Equals(id));
 
         return model is not null
             ? Options.Some(model)
-            : Options.None<Clanovi>();
+            : Options.None<Clan>();
     }
 
-    public Option<Clanovi> GetAggregate(int id)
+    public Option<Clan> GetAggregate(int id)
     {
-        var model = _dbContext.Clanovi
+        var model = _dbContext.Clan
                               .Include(clan => clan.ClanRangZasluga)
                               .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
                               .Include(clan => clan.ClanRangStarost)
                               .ThenInclude(clanRangStarost => clanRangStarost.RangStarost)
                               .AsNoTracking()
                               .FirstOrDefault(clan => clan.Id.Equals(id)); // give me the first or null; substitute for .Where()
-                                                                               // single or default throws an exception if more than one element meets the criteria
+                                                                           // single or default throws an exception if more than one element meets the criteria
 
         return model is not null
             ? Options.Some(model)
-            : Options.None<Clanovi>();
+            : Options.None<Clan>();
     }
 
-    public IEnumerable<Clanovi> GetAll()
+    public IEnumerable<Clan> GetAll()
     {
-        var models = _dbContext.Clanovi
+        var models = _dbContext.Clan
                                .ToList();
 
         return models;
     }
 
-    public IEnumerable<Clanovi> GetAllAggregates()
+    public IEnumerable<Clan> GetAllAggregates()
     {
-        var models = _dbContext.Clanovi
+        var models = _dbContext.Clan
                                .Include(clan => clan.ClanRangZasluga)
                                .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
                                .Include(clan => clan.ClanRangStarost)
@@ -77,9 +77,9 @@ public class ClanoviRepository : IClanoviRepository<int, Clanovi>
         return models;
     }
 
-    public bool Insert(Clanovi model)
+    public bool Insert(Clan model)
     {
-        if (_dbContext.Clanovi.Add(model).State == Microsoft.EntityFrameworkCore.EntityState.Added)
+        if (_dbContext.Clan.Add(model).State == Microsoft.EntityFrameworkCore.EntityState.Added)
         {
             var isSuccess = _dbContext.SaveChanges() > 0;
 
@@ -95,23 +95,23 @@ public class ClanoviRepository : IClanoviRepository<int, Clanovi>
 
     public bool Remove(int id)
     {
-        var model = _dbContext.Clanovi
+        var model = _dbContext.Clan
                               .AsNoTracking()
                               .FirstOrDefault(clan => clan.Id.Equals(id));
 
         if (model is not null)
         {
-            _dbContext.Clanovi.Remove(model);
+            _dbContext.Clan.Remove(model);
 
             return _dbContext.SaveChanges() > 0;
         }
         return false;
     }
 
-    public bool Update(Clanovi model)
+    public bool Update(Clan model)
     {
         // detach
-        if (_dbContext.Clanovi.Update(model).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+        if (_dbContext.Clan.Update(model).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
         {
             var isSuccess = _dbContext.SaveChanges() > 0;
 
@@ -125,9 +125,9 @@ public class ClanoviRepository : IClanoviRepository<int, Clanovi>
         return false;
     }
 
-    public bool UpdateAggregate(Clanovi model)
+    public bool UpdateAggregate(Clan model)
     {
-        if (_dbContext.Clanovi.Update(model).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+        if (_dbContext.Clan.Update(model).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
         {
             var isSuccess = _dbContext.SaveChanges() > 0;
 

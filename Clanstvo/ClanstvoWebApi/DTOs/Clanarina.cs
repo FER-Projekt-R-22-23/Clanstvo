@@ -10,7 +10,7 @@ namespace ClanstvoWebApi.DTOs
 {
 
 
-    public partial class Clanarine
+    public partial class Clanarina
     {
         [Key]
         public int Id { get; set; }
@@ -20,23 +20,23 @@ namespace ClanstvoWebApi.DTOs
         public int Godina { get; set; }
         public int ClanId { get; set; }
         [Column(TypeName = "date")]
-        public DateTime Datum { get; set; }
+        public DateTime? Datum { get; set; }
     }
     public static partial class DtoMapping
     {
-        public static Clanarine ToDto(this DbModels.Clanarine clanarine)
-            => new Clanarine()
+        public static Clanarina ToDto(this DbModels.Clanarina clanarina)
+            => new Clanarina()
             {
-                Id = clanarine.Id,
-                Placenost = clanarine.Placenost,
-                Iznos = clanarine.Iznos,
-                Godina = clanarine.Godina,
-                ClanId = clanarine.ClanId,
-                Datum = clanarine.Datum
+                Id = clanarina.Id,
+                Placenost = clanarina.Placenost,
+                Iznos = clanarina.Iznos,
+                Godina = clanarina.Godina,
+                ClanId = clanarina.ClanId,
+                Datum = clanarina.Datum
             };
 
-        public static DbModels.Clanarine ToDbModel(this Clanarine clanarine)
-            => new DbModels.Clanarine()
+        public static DbModels.Clanarina ToDbModel(this Clanarina clanarine)
+            => new DbModels.Clanarina()
             {
                 Id = clanarine.Id,
                 Placenost = clanarine.Placenost,

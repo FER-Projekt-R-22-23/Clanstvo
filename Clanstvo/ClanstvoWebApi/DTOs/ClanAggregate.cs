@@ -12,7 +12,7 @@ using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
 
 namespace ClanstvoWebApi.DTOs
 {
-    public class ClanoviAggregate
+    public class ClanAggregate
     {
 
         [Key]
@@ -44,12 +44,12 @@ namespace ClanstvoWebApi.DTOs
         [InverseProperty("Clan")]
         public virtual ICollection<ClanRangZasluga> ClanRangZasluga { get; set; }
         [InverseProperty("Clan")]
-        public virtual ICollection<Clanarine> Clanarine { get; set; }
+        public virtual ICollection<Clanarina> Clanarine { get; set; }
     }
     public static partial class DtoMapping
     {
-        public static ClanoviAggregate ToAggregateDto(this DbModels.Clanovi clan)
-            => new ClanoviAggregate()
+        public static ClanAggregate ToAggregateDto(this DbModels.Clan clan)
+            => new ClanAggregate()
             {
                 Id = clan.Id,
                 Ime = clan.Ime,
@@ -66,13 +66,13 @@ namespace ClanstvoWebApi.DTOs
                 ClanRangZasluga = clan.ClanRangZasluga == null
                                 ? new List<ClanRangZasluga>()
                                 : clan.ClanRangZasluga.Select(pr => pr.ToDto()).ToList(),
-                Clanarine = clan.Clanarine == null
-                                ? new List<Clanarine>()
-                                : clan.Clanarine.Select(pr => pr.ToDto()).ToList()
+                Clanarine = clan.Clanarina == null
+                                ? new List<Clanarina>()
+                                : clan.Clanarina.Select(pr => pr.ToDto()).ToList()
             };
 
-        public static DbModels.Clanovi ToDbModel(ClanoviAggregate clan)
-            => new DbModels.Clanovi()
+        public static DbModels.Clan ToDbModel(ClanAggregate clan)
+            => new DbModels.Clan()
             {
                 Id = clan.Id,
                 Ime = clan.Ime,

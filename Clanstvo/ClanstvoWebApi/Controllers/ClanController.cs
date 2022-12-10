@@ -7,82 +7,82 @@ using Clanstvo.Commons;
 namespace ClanstvoWebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class ClanoviController : ControllerBase
+public class ClanController : ControllerBase
 {
-    private readonly IClanoviRepository<int, DbModels.Clanovi> _clanoviRepository;
+    private readonly IClanRepository<int, DbModels.Clan> _clanRepository;
 
 
-    public ClanoviController(IClanoviRepository<int, DbModels.Clanovi> clanoviRepository)
+    public ClanController(IClanRepository<int, DbModels.Clan> clanRepository)
     {
-        _clanoviRepository = clanoviRepository;
+        _clanRepository = clanRepository;
     }
 
     // GET: api/Clanovi
     [HttpGet]
-    public ActionResult<IEnumerable<Clanovi>> GetAllClanovi()
+    public ActionResult<IEnumerable<Clan>> GetAllClan()
     {
-        return Ok(_clanoviRepository.GetAll().Select(DtoMapping.ToDto));
+        return Ok(_clanRepository.GetAll().Select(DtoMapping.ToDto));
     }
 
     // GET: api/Clanovi/5
     [HttpGet("{id}")]
-    public ActionResult<Clanovi> GetClanovi(int id)
+    public ActionResult<Clan> GetClan(int id)
     {
-        var clanoviOption = _clanoviRepository.Get(id).Map(DtoMapping.ToDto);
+        var clanoviOption = _clanRepository.Get(id).Map(DtoMapping.ToDto);
 
         return clanoviOption
             ? Ok(clanoviOption.Data)
             : NotFound();
     }
 
-    // PUT: api/Clanovi/5
+    // PUT: api/Clan/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public IActionResult EditClanovi(int id, Clanovi clanovi)
+    public IActionResult EditClan(int id, Clan clan)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        if (id != clanovi.Id)
+        if (id != clan.Id)
         {
             return BadRequest();
         }
 
-        if (!_clanoviRepository.Exists(id))
+        if (!_clanRepository.Exists(id))
         {
             return NotFound();
         }
 
-        return _clanoviRepository.Update(clanovi.ToDbModel())
-            ? AcceptedAtAction("EditPerson", clanovi)
+        return _clanRepository.Update(clan.ToDbModel())
+            ? AcceptedAtAction("EditClan", clan)
             : StatusCode(500);
     }
 
-    // POST: api/Clanovi
+    // POST: api/Clan
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public ActionResult<Clanovi> CreateClanovi(Clanovi clanovi)
+    public ActionResult<Clan> CreateClan(Clan clan)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        return _clanoviRepository.Insert(clanovi.ToDbModel())
-            ? CreatedAtAction("GetClanovi", new { id = clanovi.Id }, clanovi)
+        return _clanRepository.Insert(clan.ToDbModel())
+            ? CreatedAtAction("GetClan", new { id = clan.Id }, clan)
             : StatusCode(500);
     }
 
-    // DELETE: api/Clanovi/5
+    // DELETE: api/Clan/5
     [HttpDelete("{id}")]
-    public IActionResult DeleteClanovi(int id)
+    public IActionResult DeleteClan(int id)
     {
-      if(!_clanoviRepository.Exists(id))
+      if(!_clanRepository.Exists(id))
             return NotFound();
 
-      return _clanoviRepository.Remove(id)
+      return _clanRepository.Remove(id)
             ? NoContent()
             : StatusCode(500);
     }

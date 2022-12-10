@@ -18,8 +18,8 @@ IConfiguration configuration = builder.Environment.IsDevelopment()
 // this allows the DbContext to be injected
 builder.Services.AddDbContext<ClanstvoContext>(options =>
 options.UseSqlServer(configuration.GetConnectionString("ClanstvoDB")));
-builder.Services.AddTransient<IClanoviRepository<int, Clanovi>, ClanoviRepository>();
-builder.Services.AddTransient<IClanarineRepository<int, Clanarine>, ClanarineRepository>();
+builder.Services.AddTransient<IClanRepository<int, Clan>, ClanRepository>();
+builder.Services.AddTransient<IClanarinaRepository<int, Clanarina>, ClanarinaRepository>();
 builder.Services.AddTransient<IRangStarostRepository<int, RangStarost>, RangStarostRepository>();
 builder.Services.AddTransient<IRangZaslugaRepository<int, RangZasluga>, RangZaslugaRepository>();
 
