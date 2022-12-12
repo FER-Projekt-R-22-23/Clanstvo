@@ -4,6 +4,9 @@ using Clanstvo.Repositories;
 using ClanstvoWebApi.DTOs;
 using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
 using Clanstvo.Commons;
+using BaseLibrary;
+using Microsoft.AspNetCore.Rewrite;
+using System.Data;
 
 namespace ClanstvoWebApi.Controllers
 {
@@ -11,9 +14,9 @@ namespace ClanstvoWebApi.Controllers
     [ApiController]
     public class RangZaslugaController : ControllerBase
     {
-        private readonly IRangZaslugaRepository<int, DbModels.RangZasluga> _rangZaslugaRepository;
+        private readonly IRangZaslugaRepository _rangZaslugaRepository;
 
-        public RangZaslugaController(IRangZaslugaRepository<int, DbModels.RangZasluga> context)
+        public RangZaslugaController(IRangZaslugaRepository context)
         {
             _rangZaslugaRepository = context;
         }
@@ -22,18 +25,26 @@ namespace ClanstvoWebApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<RangZasluga>> GetAllRangZasluga()
         {
-            return Ok(_rangZaslugaRepository.GetAll().Select(DtoMapping.ToDto));
+            var rangZaslugaResults = _rangZaslugaRepository.GetAll()
+                .Map(rangZasluga => rangZasluga.Select(DtoMapping.ToDto));
+
+            return rangZaslugaResults
+                ? Ok(rangZaslugaResults.Data)
+                : Problem(rangZaslugaResults.Message, statusCode: 500);
         }
 
         // GET: api/RangZasluga/5
         [HttpGet("{id}")]
         public ActionResult<RangZasluga> GetRangZasluga(int id)
         {
-            var rangZaslugaOption =  _rangZaslugaRepository.Get(id).Map(DtoMapping.ToDto);
+            var rangZaslugaResult =  _rangZaslugaRepository.Get(id).Map(DtoMapping.ToDto);
 
-            return rangZaslugaOption
-                ? Ok(rangZaslugaOption.Data)
-                : NotFound();
+            return rangZaslugaResult switch
+            {
+                { IsSuccess: true } => Ok(rangZaslugaResult.Data),
+                { IsFailure: true } => NotFound(),
+                { IsException: true } or _ => Problem(rangZaslugaResult.Message, statusCode: 500)
+            };
         }
 
         // PUT: api/RangZasluga/5
@@ -56,24 +67,28 @@ namespace ClanstvoWebApi.Controllers
                 return NotFound();
             }
 
-            return _rangZaslugaRepository.Update(rangZasluga.ToDbModel())
+            var updateResult = _rangZaslugaRepository.Update(rangZasluga.ToDomain());
+
+            return updateResult
                 ? AcceptedAtAction("EditRangZasluga", rangZasluga)
-                : StatusCode(500);
+                : Problem(updateResult.Message, statusCode: 500);
         }
 
         // POST: api/RangZasluga
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<RangZasluga> CreateRole(RangZasluga rangZasluga)
+        public ActionResult<RangZasluga> CreateRangZasluga(RangZasluga rangZasluga)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return _rangZaslugaRepository.Insert(rangZasluga.ToDbModel())
+            var createResult = _rangZaslugaRepository.Insert(rangZasluga.ToDomain());
+
+            return createResult
                 ? CreatedAtAction("GetRangZasluga", new { id = rangZasluga.Id }, rangZasluga)
-                : StatusCode(500);
+                : Problem(createResult.Message, statusCode: 500);
         }
 
         // DELETE: api/RangZasluga/5
@@ -83,9 +98,10 @@ namespace ClanstvoWebApi.Controllers
             if (!_rangZaslugaRepository.Exists(id))
                 return NotFound();
 
-            return _rangZaslugaRepository.Remove(id)
+            var deleteResult = _rangZaslugaRepository.Remove(id);
+            return deleteResult
                 ? NoContent()
-                : StatusCode(500);
+                : Problem(deleteResult.Message, statusCode: 500);
         }
     }
 }

@@ -4,6 +4,9 @@ using Clanstvo.Repositories;
 using ClanstvoWebApi.DTOs;
 using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
 using Clanstvo.Commons;
+using Clanstvo.Repositories.SqlServer;
+using BaseLibrary;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace ClanstvoWebApi.Contollers
 
@@ -13,9 +16,9 @@ namespace ClanstvoWebApi.Contollers
     [ApiController]
     public class RangStarostController : ControllerBase
     {
-        private readonly IRangStarostRepository<int, DbModels.RangStarost> _rangStarostRepository;
+        private readonly IRangStarostRepository _rangStarostRepository;
 
-        public RangStarostController(IRangStarostRepository<int, DbModels.RangStarost> context)
+        public RangStarostController(IRangStarostRepository context)
         {
             _rangStarostRepository = context;
         }
@@ -24,18 +27,26 @@ namespace ClanstvoWebApi.Contollers
         [HttpGet]
         public ActionResult<IEnumerable<RangStarost>> GetAllRangStarost()
         {
-            return Ok(_rangStarostRepository.GetAll().Select(DtoMapping.ToDto));
+            var rangStarostResults = _rangStarostRepository.GetAll()
+                .Map(rangStarost => rangStarost.Select(DtoMapping.ToDto));
+
+            return rangStarostResults
+                ? Ok(rangStarostResults.Data)
+                : Problem(rangStarostResults.Message, statusCode: 500);
         }
 
         // GET: api/RangStarost/5
         [HttpGet("{id}")]
         public ActionResult<RangStarost> GetRangStarost(int id)
         {
-            var rangStarostOption = _rangStarostRepository.Get(id).Map(DtoMapping.ToDto);
+            var rangStarostResult = _rangStarostRepository.Get(id).Map(DtoMapping.ToDto);
 
-            return rangStarostOption
-                ? Ok(rangStarostOption.Data)
-                : NotFound();
+            return rangStarostResult switch
+            {
+                { IsSuccess: true } => Ok(rangStarostResult.Data),
+                { IsFailure: true } => NotFound(),
+                { IsException: true } or _ => Problem(rangStarostResult.Message, statusCode: 500)
+            };
         }
 
         // PUT: api/RangStarost/5
@@ -57,10 +68,11 @@ namespace ClanstvoWebApi.Contollers
             {
                 return NotFound();
             }
+            var updateResult = _rangStarostRepository.Update(rangStarost.ToDomain());
 
-            return _rangStarostRepository.Update(rangStarost.ToDbModel())
+            return updateResult
                 ? AcceptedAtAction("EditRangStarost", rangStarost)
-                : StatusCode(500);
+                : Problem(updateResult.Message, statusCode: 500);
         }
 
         // POST: api/RangStarost
@@ -73,9 +85,11 @@ namespace ClanstvoWebApi.Contollers
                 return BadRequest(ModelState);
             }
 
-            return _rangStarostRepository.Insert(rangStarost.ToDbModel())
+            var createResult = _rangStarostRepository.Insert(rangStarost.ToDomain());
+
+            return createResult
                 ? CreatedAtAction("GetRangStarost", new { id = rangStarost.Id }, rangStarost)
-                : StatusCode(500);
+                : Problem(createResult.Message, statusCode: 500);
         }
 
         // DELETE: api/RangStarost/5
@@ -85,9 +99,10 @@ namespace ClanstvoWebApi.Contollers
             if (!_rangStarostRepository.Exists(id))
                 return NotFound();
 
-            return _rangStarostRepository.Remove(id)
+            var deleteResult = _rangStarostRepository.Remove(id);
+            return deleteResult
                 ? NoContent()
-                : StatusCode(500);
+                : Problem(deleteResult.Message, statusCode: 500);
         }
     }
 }
