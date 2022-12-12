@@ -53,7 +53,18 @@ public static class Mapping
             ClanId = clanarina.ClanId,
             Datum = clanarina.Datum
         };
-    
+
+    public static DodjelaStarost ToDomain(this DbModels.ClanRangStarost clanRangStarost)
+        => new DodjelaStarost(
+            clanRangStarost.Datum,
+            clanRangStarost.RangStarost.ToDomain()
+            );
+
+    public static DodjelaZasluga ToDomain(this DbModels.ClanRangZasluga clanRangZasluga)
+        => new DodjelaZasluga(
+            clanRangZasluga.Datum,
+            clanRangZasluga.RangZasluga.ToDomain()
+            );
 
     public static DbModels.ClanRangZasluga ToDbModel(this DodjelaZasluga dodjelaZasluga, int clanId)
         => new DbModels.ClanRangZasluga()
@@ -82,7 +93,10 @@ public static class Mapping
             clan.Adresa,
             clan.ImaMaramu,
             clan.DatumMarama,
-            clan.MjestoMarama
+            clan.MjestoMarama,
+            clan.ClanRangStarost.Select(ToDomain),
+            clan.ClanRangZasluga.Select(ToDomain),
+            clan.Clanarina.Select(ToDomain)
         );
 
     public static DbModels.Clan ToDbModel(this Clan clan)
@@ -96,7 +110,10 @@ public static class Mapping
             Adresa = clan.Adresa,
             ImaMaramu = clan.ImaMaramu,
             DatumMarama = clan.DatumMarama,
-            MjestoMarama = clan.MjestoMarama
+            MjestoMarama = clan.MjestoMarama,
+            ClanRangStarost = clan.DodjeleStarost.Select(pr => pr.ToDbModel(clan.Id)).ToList(),
+            ClanRangZasluga = clan.DodjeleZasluga.Select(pr => pr.ToDbModel(clan.Id)).ToList(),
+            Clanarina = clan.Clanarina.Select(pr => pr.ToDbModel()).ToList()
         };
 
 }

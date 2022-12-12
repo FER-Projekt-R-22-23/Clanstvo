@@ -32,10 +32,17 @@ public class ClanRepository : IClanRepository
 
     public bool Exists(int id)
     {
-        var model = _dbContext.Clan
-                              .AsNoTracking()
-                              .FirstOrDefault(clan => clan.Id.Equals(id));
-        return model is not null;
+        try
+        {
+
+            var model = _dbContext.Clan
+                                  .AsNoTracking()
+                                  .FirstOrDefault(clan => clan.Id.Equals(id));
+            return model is not null;
+        } catch
+        {
+            return false;
+        }
     }
 
     public Result<Clan> Get(int id)
@@ -44,7 +51,7 @@ public class ClanRepository : IClanRepository
         {
             var model = _dbContext.Clan
                 .AsNoTracking()
-                .FirstOrDefault(clan => clan.Id.Equals(id))
+                .FirstOrDefault(clan => clan.Id.Equals(id))?
                 .ToDomain();
 
             return model is not null
@@ -68,7 +75,7 @@ public class ClanRepository : IClanRepository
                 .ThenInclude(clanRangStarost => clanRangStarost.RangStarost)
                 .Include(clan => clan.Clanarina)
                 .AsNoTracking()
-                .FirstOrDefault(clan => clan.Id.Equals(id))
+                .FirstOrDefault(clan => clan.Id.Equals(id))?
                 .ToDomain(); // give me the first or null; substitute for .Where()
             // single or default throws an exception if more than one element meets the criteria
 
@@ -108,6 +115,7 @@ public class ClanRepository : IClanRepository
                 .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
                 .Include(clan => clan.ClanRangStarost)
                 .ThenInclude(clanRangStarost => clanRangStarost.RangStarost)
+                .Include(clan => clan.Clanarina)
                 .Select(Mapping.ToDomain);
 
             return Results.OnSuccess(models);
@@ -207,6 +215,7 @@ public class ClanRepository : IClanRepository
                     .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
                     .Include(clan => clan.ClanRangStarost)
                     .ThenInclude(clanRangStarost => clanRangStarost.RangStarost)
+                    .Include(clan => clan.Clanarina)
                     .FirstOrDefault(_ => _.Id == model.Id);
             if (dbModel == null)
                 return Results.OnFailure($"Clan with id {model.Id} not found.");
@@ -263,6 +272,34 @@ public class ClanRepository : IClanRepository
                 .ForEach( starost =>{
                     dbModel.ClanRangStarost.Remove(starost);
                 });
+
+            
+
+           foreach(var clanarina in model.Clanarina)
+            {
+                var clanarinaToUpdate = dbModel.Clanarina
+                    .FirstOrDefault(pr => pr.ClanId.Equals(model.Id) && pr.Id.Equals(clanarina.Id));
+                if (clanarinaToUpdate != null)
+                {
+                    clanarinaToUpdate.Placenost = clanarina.Placenost;
+                    clanarinaToUpdate.Iznos = clanarina.Iznos;
+                    clanarinaToUpdate.Godina = clanarina.Godina;
+                    clanarinaToUpdate.ClanId = clanarina.ClanId;
+                    clanarinaToUpdate.Datum = clanarina.Datum;
+                }
+                else
+                {
+                    dbModel.Clanarina.Add(clanarina.ToDbModel());
+                }
+            }
+
+            dbModel.Clanarina
+                 .Where(pr => !model.Clanarina.Any(_ => _.Id == pr.Id))
+                 .ToList()
+                 .ForEach(clanarina =>
+                 {
+                     dbModel.Clanarina.Remove(clanarina);
+                 });
 
             _dbContext.Clan
                       .Update(dbModel);

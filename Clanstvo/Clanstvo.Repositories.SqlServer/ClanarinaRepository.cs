@@ -46,7 +46,7 @@ public class ClanarinaRepository : IClanarinaRepository
         try{
         var model = _dbContext.Clanarina
                               .AsNoTracking()
-                              .FirstOrDefault(clanarina => clanarina.Id.Equals(id))
+                              .FirstOrDefault(clanarina => clanarina.Id.Equals(id))?
                               .ToDomain();
 
         return model is not null
