@@ -16,6 +16,10 @@ public class Clan : AggregateRoot<int>
     private DateTime? _datumMarama;
     private string? _mjestoMarama;
 
+    private readonly List<DodjelaZasluga> _dodjeleZasluga;
+    private readonly List<DodjelaStarost> _dodjeleStarost;
+    private readonly List<Clanarina> _clanarine;
+
 
     public string Ime { get => _ime; set => _ime = value; }
     public string Prezime { get => _prezime; set => _prezime = value; }
@@ -26,8 +30,15 @@ public class Clan : AggregateRoot<int>
     public DateTime? DatumMarama { get => _datumMarama; set => _datumMarama = value; }
     public string? MjestoMarama { get => _mjestoMarama; set => _mjestoMarama = value; }
 
+    public IReadOnlyList<DodjelaStarost> DodjeleStarost => (IReadOnlyList<DodjelaStarost>)_dodjeleZasluga.ToList();
+    public IReadOnlyList<DodjelaZasluga> DodjeleZasluga => (IReadOnlyList<DodjelaZasluga>)_dodjeleStarost.ToList();
+    public IReadOnlyList<Clanarina> Clanarina => (IReadOnlyList<Clanarina>)_clanarine.ToList();
+
     public Clan(int id, string ime, string prezime, DateTime datumRodenja,
-                      byte[] slika, string adresa, bool imaMaramu, DateTime? datumMarama, string mjestoMarama) : base(id)
+                      byte[] slika, string adresa, bool imaMaramu, DateTime? datumMarama, string mjestoMarama,
+                      IEnumerable<DodjelaStarost>? rangoviStarost = null,
+                      IEnumerable<DodjelaZasluga>? rangoviZasluga = null,
+                      IEnumerable<Clanarina>? clanarine = null) : base(id)
     {
         if (string.IsNullOrEmpty(ime))
         {
@@ -59,8 +70,55 @@ public class Clan : AggregateRoot<int>
         _imaMaramu = imaMaramu;
         _datumMarama = datumMarama;
         _mjestoMarama = mjestoMarama;
-
+        _dodjeleStarost = rangoviStarost?.ToList() ?? new List<DodjelaStarost>();
+        _dodjeleZasluga = rangoviZasluga?.ToList() ?? new List<DodjelaZasluga>();
+        _clanarine = clanarine?.ToList() ?? new List<Clanarina>();
     }
+
+    public bool DodajRangStarost(RangStarost rang, DateTime? datum = null)
+    {
+        datum ??= DateTime.Now;
+        var dodjelaStarost = new DodjelaStarost(datum.Value, rang);
+        _dodjeleStarost.Add(dodjelaStarost);
+        return true;
+    }
+
+    public bool UkloniRangStarost(DodjelaStarost dodjelaStarost)
+    {
+        return _dodjeleStarost.Remove(dodjelaStarost);
+    }
+
+    public bool UkloniRangStarost(RangStarost rang)
+    {
+        var trazenaDodjela = _dodjeleStarost.FirstOrDefault(ds => ds.RangStarost.Equals(rang));
+
+        return trazenaDodjela != null &&
+                _dodjeleStarost.Remove(trazenaDodjela);
+    }
+
+
+    public bool DodajRangZasluga(RangZasluga rang, DateTime? datum = null)
+    {
+        datum ??= DateTime.Now;
+        var dodjelaZasluga = new DodjelaZasluga(datum.Value, rang);
+        _dodjeleZasluga.Add(dodjelaZasluga);
+        return true;
+    }
+
+    public bool UkloniRangZasluga(DodjelaZasluga dodjelaZasluga)
+    {
+        return _dodjeleZasluga.Remove(dodjelaZasluga);
+    }
+
+    public bool UkloniRangZasluga(RangZasluga rang)
+    {
+        var trazenaDodjela = _dodjeleZasluga.FirstOrDefault(ds => ds.RangZasluga.Equals(rang));
+
+        return trazenaDodjela != null &&
+                _dodjeleZasluga.Remove(trazenaDodjela);
+    }
+
+
 
     public override bool Equals(object? obj)
     {
@@ -74,13 +132,16 @@ public class Clan : AggregateRoot<int>
                 _adresa == clan._adresa &&
                 _imaMaramu == clan._imaMaramu &&
                 _datumMarama == clan._datumMarama &&
-                _mjestoMarama == clan._mjestoMarama;
+                _mjestoMarama == clan._mjestoMarama &&
+                _dodjeleStarost.SequenceEqual(clan._dodjeleStarost) &&
+                _dodjeleZasluga.SequenceEqual(clan._dodjeleZasluga) &&
+                _clanarine.SequenceEqual(clan._clanarine);
     }
 
     public override int GetHashCode()
     {
         return HashCode.Combine(_ime, _prezime, _datumRodenja, _slika, _adresa, _imaMaramu, _datumRodenja, _mjestoMarama);
-        // bez _id u funkciji jer moze uzimati max 8 varijabli
+        // bez _id rangova i clanarina u funkciji jer moze uzimati max 8 varijabli
     }
 
 }

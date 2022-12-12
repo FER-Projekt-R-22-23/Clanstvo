@@ -1,10 +1,5 @@
-﻿using Clanstvo.DataAccess.SqlServer.Data.DbModels;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
+﻿using System.ComponentModel.DataAnnotations;
+using DomainModels = Clanstvo.Domain.Models;
 
 namespace ClanstvoWebApi.DTOs
 {
@@ -22,7 +17,7 @@ namespace ClanstvoWebApi.DTOs
         [StringLength(50, ErrorMessage = "Last name can't be longer than 50 characters")]
         public string Prezime { get; set; }
 
-        [Column(TypeName = "date")]
+        [DataType(DataType.DateTime)]
         public DateTime DatumRodenja { get; set; }
         public byte[] Slika { get; set; }
 
@@ -30,15 +25,16 @@ namespace ClanstvoWebApi.DTOs
         [StringLength(50, ErrorMessage = "Address can't be longer than 50 characters")]
         public string Adresa { get; set; }
         public bool ImaMaramu { get; set; }
-        [Column(TypeName = "date")]
+
+        [DataType(DataType.DateTime)]
         public DateTime? DatumMarama { get; set; }
+
         [StringLength(50)]
-        [Unicode(false)]
         public string MjestoMarama { get; set; }
     }
     public static partial class DtoMapping
     {
-        public static Clan ToDto(this DbModels.Clan clan)
+        public static Clan ToDto(this DomainModels.Clan clan)
             => new Clan()
             {
                 Id = clan.Id,
@@ -52,32 +48,18 @@ namespace ClanstvoWebApi.DTOs
                 MjestoMarama = clan.MjestoMarama,
             };
 
-        public static DbModels.Clan ToDbModel(this Clan clan
-            )
-            => new DbModels.Clan()
-            {
-                Id = clan.Id,
-                Ime = clan.Ime,
-                Prezime = clan.Prezime,
-                Slika = clan.Slika,
-                DatumRodenja = clan.DatumRodenja,
-                Adresa = clan.Adresa,
-                ImaMaramu = clan.ImaMaramu,
-                DatumMarama = clan.DatumMarama,
-                MjestoMarama = clan.MjestoMarama,
-            };
-
-            /*=> new DomainModels.Clan(
+        public static DomainModels.Clan ToDomain(this Clan clan)
+            => new DomainModels.Clan(
                 clan.Id,
                 clan.Ime,
                 clan.Prezime,
-                clan.Slika,
                 clan.DatumRodenja,
+                clan.Slika,
                 clan.Adresa,
                 clan.ImaMaramu,
                 clan.DatumMarama,
-                clan.MjestoMarama,
-            )*/
+                clan.MjestoMarama
+            );
     }
 }
 

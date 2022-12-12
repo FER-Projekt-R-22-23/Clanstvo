@@ -1,10 +1,5 @@
-﻿using Clanstvo.DataAccess.SqlServer.Data.DbModels;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
+﻿using System.ComponentModel.DataAnnotations;
+using DomainModels = Clanstvo.Domain.Models;
 
 namespace ClanstvoWebApi.DTOs
 {
@@ -20,25 +15,18 @@ namespace ClanstvoWebApi.DTOs
     }
     public static partial class DtoMapping
     {
-        public static RangZasluga ToDto(this DbModels.RangZasluga clan)
+        public static RangZasluga ToDto(this DomainModels.RangZasluga clan)
             => new RangZasluga()
             {
                 Id = clan.Id,
                 Naziv = clan.Naziv,
             };
 
-        public static DbModels.RangZasluga ToDbModel(this RangZasluga clan
+        public static DomainModels.RangZasluga ToDomain(this RangZasluga clan
             )
-            => new DbModels.RangZasluga()
-            {
-
-                Id = clan.Id,
-                Naziv = clan.Naziv,
-            };
-
-        /* => new DomainModels.RangZasluga(
-               clan.Id,
-               clan.Naziv
-           ) */
+            => new DomainModels.RangZasluga(
+                clan.Id,
+                clan.Naziv
+            );
     }
 }
