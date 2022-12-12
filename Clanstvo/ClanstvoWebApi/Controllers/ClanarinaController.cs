@@ -4,6 +4,8 @@ using Clanstvo.Repositories;
 using ClanstvoWebApi.DTOs;
 using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
 using Clanstvo.Commons;
+using BaseLibrary;
+using System;
 
 namespace ClanstvoWebApi.Controllers
 {
@@ -11,9 +13,9 @@ namespace ClanstvoWebApi.Controllers
     [ApiController]
     public class ClanarinaController : ControllerBase
     {
-        private readonly IClanarinaRepository<int, DbModels.Clanarina> _clanarinaRepository;
+        private readonly IClanarinaRepository _clanarinaRepository;
 
-        public ClanarinaController(IClanarinaRepository<int, DbModels.Clanarina> context)
+        public ClanarinaController(IClanarinaRepository context)
         {
             _clanarinaRepository = context;
         }
@@ -22,18 +24,26 @@ namespace ClanstvoWebApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Clanarina>> GetAllClanarina()
         {
-            return Ok(_clanarinaRepository.GetAll().Select(DtoMapping.ToDto));
+            var clanarinaResults = _clanarinaRepository.GetAll()
+            .Map(clanarina => clanarina.Select(DtoMapping.ToDto));
+
+            return clanarinaResults
+                ? Ok(clanarinaResults.Data)
+                : Problem(clanarinaResults.Message, statusCode: 500);
         }
 
         // GET: api/Clanarine/5
         [HttpGet("{id}")]
         public ActionResult<Clanarina> GetClanarina(int id)
-        {
-            var clanarinaOption = _clanarinaRepository.Get(id).Map(DtoMapping.ToDto);
+        { 
+            var clanarinaResult = _clanarinaRepository.Get(id).Map(DtoMapping.ToDto);
 
-            return clanarinaOption
-                ? Ok(clanarinaOption.Data)
-                : NotFound();
+            return clanarinaResult switch
+            {
+                { IsSuccess: true } => Ok(clanarinaResult.Data),
+                { IsFailure: true } => NotFound(),
+                { IsException: true } or _ => Problem(clanarinaResult.Message, statusCode: 500)
+            };
         }
 
         // PUT: api/Clanarine/5
@@ -56,9 +66,12 @@ namespace ClanstvoWebApi.Controllers
                 return NotFound();
             }
 
-            return _clanarinaRepository.Update(clanarina.ToDbModel())
+
+            var updateResult = _clanarinaRepository.Update(clanarina.ToDomain());
+
+            return updateResult
                 ? AcceptedAtAction("EditClanarina", clanarina)
-                : StatusCode(500);
+                : Problem(updateResult.Message, statusCode: 500);
         }
 
         // POST: api/Clanarina
@@ -70,10 +83,11 @@ namespace ClanstvoWebApi.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var createResult = _clanarinaRepository.Insert(clanarina.ToDomain());
 
-            return _clanarinaRepository.Insert(clanarina.ToDbModel())
-                ? CreatedAtAction("GetClanarina", new { id = clanarina.Id }, clanarina)
-                : StatusCode(500);
+            return createResult
+            ? CreatedAtAction("GetClanarina", new { id = clanarina.Id }, clanarina)
+                : Problem(createResult.Message, statusCode: 500);
         }
 
         // DELETE: api/Clanarina/5
@@ -83,9 +97,10 @@ namespace ClanstvoWebApi.Controllers
             if (!_clanarinaRepository.Exists(id))
                 return NotFound();
 
-            return _clanarinaRepository.Remove(id)
+            var deleteResult = _clanarinaRepository.Remove(id);
+            return deleteResult
                 ? NoContent()
-                : StatusCode(500);
+                : Problem(deleteResult.Message, statusCode: 500);
         }
     }
 }
