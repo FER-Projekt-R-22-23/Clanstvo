@@ -10,7 +10,7 @@ public class Clan : AggregateRoot<int>
     private string _ime;
     private string _prezime;
     private DateTime _datumRodenja;
-    private string? _slika;
+    private byte[]? _slika;
     private string _adresa;
     private bool _imaMaramu;
     private DateTime? _datumMarama;
@@ -20,13 +20,14 @@ public class Clan : AggregateRoot<int>
     public string Ime { get => _ime; set => _ime = value; }
     public string Prezime { get => _prezime; set => _prezime = value; }
     public DateTime DatumRodenja { get => _datumRodenja; set => _datumRodenja = value; }
-    public string? Slika { get => _slika; set => _slika = value; }
+    public byte[]? Slika { get => _slika; set => _slika = value; }
+    public string Adresa { get => _adresa; set => _adresa = value; }
     public bool ImaMaramu { get => _imaMaramu; set => _imaMaramu = value; }
     public DateTime? DatumMarama { get => _datumMarama; set => _datumMarama = value; }
     public string? MjestoMarama { get => _mjestoMarama; set => _mjestoMarama = value; }
 
     public Clan(int id, string ime, string prezime, DateTime datumRodenja,
-                      string slika,string adresa, bool imaMaramu, DateTime datumMarama, string mjestoMarama) : base(id)
+                      byte[] slika, string adresa, bool imaMaramu, DateTime? datumMarama, string mjestoMarama) : base(id)
     {
         if (string.IsNullOrEmpty(ime))
         {
@@ -43,7 +44,8 @@ public class Clan : AggregateRoot<int>
             throw new ArgumentException($"'{nameof(datumRodenja)}' cannot be null or empty.", nameof(datumRodenja));
         }
 
-        if(string.IsNullOrEmpty(adresa))
+
+        if (string.IsNullOrEmpty(adresa))
         {
             throw new ArgumentException($"'{nameof(adresa)}' cannot be null or empty.", nameof(adresa));
         }
@@ -53,6 +55,7 @@ public class Clan : AggregateRoot<int>
         _prezime = prezime;
         _datumRodenja = datumRodenja;
         _slika = slika;
+        _adresa = adresa;
         _imaMaramu = imaMaramu;
         _datumMarama = datumMarama;
         _mjestoMarama = mjestoMarama;
@@ -68,6 +71,7 @@ public class Clan : AggregateRoot<int>
                 _prezime == clan._prezime &&
                 _datumRodenja == clan._datumRodenja &&
                 _slika == clan._slika &&
+                _adresa == clan._adresa &&
                 _imaMaramu == clan._imaMaramu &&
                 _datumMarama == clan._datumMarama &&
                 _mjestoMarama == clan._mjestoMarama;

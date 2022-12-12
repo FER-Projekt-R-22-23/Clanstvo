@@ -6,7 +6,7 @@ namespace Clanstvo.Domain.Models;
 public class Clanarina : Entity<int>
 {
     private bool _placenost;
-    private float _iznos;
+    private decimal _iznos;
     private int _godina;
     private int _clanId;
     private DateTime? _datum;
@@ -14,11 +14,12 @@ public class Clanarina : Entity<int>
 
 
     public bool Placenost { get => _placenost; set => _placenost = value; }
-    public float Iznos { get => _iznos; set => _iznos = value; }
+    public decimal Iznos { get => _iznos; set => _iznos = value; }
+    public int Godina { get => _godina; set => _godina = value; }
     public int ClanId { get => _clanId; set => _clanId = value; }
     public DateTime? Datum { get => _datum; set => _datum = value; }
 
-    public Clanarina(int id, bool placenost, float iznos, int godina, int clanId ,DateTime datum) : base(id)
+    public Clanarina(int id, bool placenost, decimal iznos, int godina, int clanId ,DateTime? datum) : base(id)
     {
 
         if (datum == DateTime.MinValue)
