@@ -35,7 +35,7 @@ public class Clan : AggregateRoot<int>
     public IReadOnlyList<Clanarina> Clanarina => _clanarine.ToList();
 
     public Clan(int id, string ime, string prezime, DateTime datumRodenja,
-                      byte[] slika, string adresa, bool imaMaramu, DateTime? datumMarama, string mjestoMarama,
+                      byte[]? slika, string adresa, bool imaMaramu, DateTime? datumMarama, string? mjestoMarama,
                       IEnumerable<DodjelaStarost>? rangoviStarost = null,
                       IEnumerable<DodjelaZasluga>? rangoviZasluga = null,
                       IEnumerable<Clanarina>? clanarine = null) : base(id)

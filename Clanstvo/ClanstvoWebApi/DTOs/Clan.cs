@@ -19,7 +19,7 @@ namespace ClanstvoWebApi.DTOs
 
         [DataType(DataType.DateTime)]
         public DateTime DatumRodenja { get; set; }
-        public byte[] Slika { get; set; }
+        public byte[]? Slika { get; set; }
 
         [Required(ErrorMessage = "Address can't be null")]
         [StringLength(50, ErrorMessage = "Address can't be longer than 50 characters")]
@@ -30,7 +30,7 @@ namespace ClanstvoWebApi.DTOs
         public DateTime? DatumMarama { get; set; }
 
         [StringLength(50)]
-        public string MjestoMarama { get; set; } = string.Empty;
+        public string? MjestoMarama { get; set; } = string.Empty;
     }
     public static partial class DtoMapping
     {
