@@ -30,9 +30,9 @@ public class Clan : AggregateRoot<int>
     public DateTime? DatumMarama { get => _datumMarama; set => _datumMarama = value; }
     public string? MjestoMarama { get => _mjestoMarama; set => _mjestoMarama = value; }
 
-    public IReadOnlyList<DodjelaStarost> DodjeleStarost => (IReadOnlyList<DodjelaStarost>)_dodjeleZasluga.ToList();
-    public IReadOnlyList<DodjelaZasluga> DodjeleZasluga => (IReadOnlyList<DodjelaZasluga>)_dodjeleStarost.ToList();
-    public IReadOnlyList<Clanarina> Clanarina => (IReadOnlyList<Clanarina>)_clanarine.ToList();
+    public IReadOnlyList<DodjelaStarost> DodjeleStarost => _dodjeleStarost.ToList();
+    public IReadOnlyList<DodjelaZasluga> DodjeleZasluga => _dodjeleZasluga.ToList();
+    public IReadOnlyList<Clanarina> Clanarina => _clanarine.ToList();
 
     public Clan(int id, string ime, string prezime, DateTime datumRodenja,
                       byte[] slika, string adresa, bool imaMaramu, DateTime? datumMarama, string mjestoMarama,
