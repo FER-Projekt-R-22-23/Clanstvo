@@ -22,20 +22,20 @@ namespace ClanstvoWebApi.DTOs
 
         [Required(ErrorMessage = "Address can't be empty", AllowEmptyStrings = false)]
         [StringLength(50, ErrorMessage = "Address can't be longer than 50 characters")]
-        public string Adresa { get; set; }
+        public string Adresa { get; set; } = string.Empty;
         public bool ImaMaramu { get; set; }
         [DataType(DataType.DateTime)]
         public DateTime? DatumMarama { get; set; }
         [StringLength(50)]
-        
-        public string MjestoMarama { get; set; }
 
+        public string MjestoMarama { get; set; } = string.Empty;
+
+
+        public IEnumerable<DodjelaStarost> DodjeleStarost { get; set; } = Enumerable.Empty<DodjelaStarost>();
         
-        public virtual ICollection<DodjelaStarost> DodjeleStarost { get; set; }
-        
-        public virtual ICollection<DodjelaZasluga> DodjeleZasluga { get; set; }
-        
-        public virtual ICollection<Clanarina> Clanarina { get; set; }
+        public IEnumerable<DodjelaZasluga> DodjeleZasluga { get; set; } = Enumerable.Empty<DodjelaZasluga>();
+
+        public IEnumerable<Clanarina> Clanarina { get; set; } = Enumerable.Empty<Clanarina>();
     }
     public static partial class DtoMapping
     {
