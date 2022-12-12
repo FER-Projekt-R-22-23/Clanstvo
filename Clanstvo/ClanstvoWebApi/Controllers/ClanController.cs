@@ -3,16 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using ClanstvoWebApi.DTOs;
 using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
 using Clanstvo.Commons;
+using BaseLibrary;
+using System;
 
 namespace ClanstvoWebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class ClanController : ControllerBase
 {
-    private readonly IClanRepository<int, DbModels.Clan> _clanRepository;
+    private readonly IClanRepository _clanRepository;
 
 
-    public ClanController(IClanRepository<int, DbModels.Clan> clanRepository)
+    public ClanController(IClanRepository clanRepository)
     {
         _clanRepository = clanRepository;
     }
@@ -21,28 +23,40 @@ public class ClanController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<Clan>> GetAllClan()
     {
-        return Ok(_clanRepository.GetAll().Select(DtoMapping.ToDto));
+
+        var clanResults = _clanRepository.GetAll()
+            .Map(clan => clan.Select(DtoMapping.ToDto));
+
+        return clanResults
+            ? Ok(clanResults.Data)
+            : Problem(clanResults.Message, statusCode: 500);
     }
 
     // GET: api/Clanovi/5
     [HttpGet("{id}")]
     public ActionResult<Clan> GetClan(int id)
     {
-        var clanOption = _clanRepository.Get(id).Map(DtoMapping.ToDto);
+        var clanResult = _clanRepository.Get(id).Map(DtoMapping.ToDto);
 
-        return clanOption
-            ? Ok(clanOption.Data)
-            : NotFound();
+        return clanResult switch
+        {
+            { IsSuccess: true } => Ok(clanResult.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(clanResult.Message, statusCode: 500)
+        };
     }
 
     [HttpGet("/Aggregate/{id}")]
-    public ActionResult<ClanAggregate> GetPersonAggregate(int id)
+    public ActionResult<ClanAggregate> GetAggregate(int id)
     {
-        var clanOption = _clanRepository.GetAggregate(id).Map(DtoMapping.ToAggregateDto);
+        var clanResult = _clanRepository.GetAggregate(id).Map(DtoMapping.ToAggregateDto);
 
-        return clanOption
-           ? Ok(clanOption.Data)
-           : NotFound();
+        return clanResult switch
+        {
+            { IsSuccess: true } => Ok(clanResult.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(clanResult.Message, statusCode: 500)
+        };
     }
 
 
@@ -66,9 +80,11 @@ public class ClanController : ControllerBase
             return NotFound();
         }
 
-        return _clanRepository.Update(clan.ToDbModel())
-            ? AcceptedAtAction("EditClan", clan)
-            : StatusCode(500);
+        var updateResult = _clanRepository.Update(clan.ToDomain());
+
+        return updateResult
+            ? AcceptedAtAction("EditClan", clan) 
+            : Problem(updateResult.Message, statusCode: 500);
     }
 
     // POST: api/Clan
@@ -81,9 +97,11 @@ public class ClanController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        return _clanRepository.Insert(clan.ToDbModel())
-            ? CreatedAtAction("GetClan", new { id = clan.Id }, clan)
-            : StatusCode(500);
+        var createResult = _clanRepository.Insert(clan.ToDomain());
+
+        return createResult
+            ? CreatedAtAction("GetClan", new { id = clan.Id }, clan) 
+            : Problem(createResult.Message, statusCode: 500);
     }
 
     // DELETE: api/Clan/5
@@ -93,8 +111,9 @@ public class ClanController : ControllerBase
       if(!_clanRepository.Exists(id))
             return NotFound();
 
-      return _clanRepository.Remove(id)
+        var deleteResult = _clanRepository.Remove(id);
+        return deleteResult
             ? NoContent()
-            : StatusCode(500);
+            : Problem(deleteResult.Message, statusCode: 500);
     }
 }
