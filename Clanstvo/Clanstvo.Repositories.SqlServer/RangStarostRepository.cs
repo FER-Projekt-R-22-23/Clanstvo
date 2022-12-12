@@ -1,8 +1,7 @@
-﻿using Clanstvo.Commons;
-using Clanstvo.DataAccess.SqlServer.Data;
-using Clanstvo.DataAccess.SqlServer.Data.DbModels;
+﻿using Clanstvo.DataAccess.SqlServer.Data;
+using Clanstvo.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+using BaseLibrary;
 
 namespace Clanstvo.Repositories.SqlServer;
 
@@ -17,85 +16,141 @@ public class RangStarostRepository : IRangStarostRepository
 
     public bool Exists(RangStarost model)
     {
-        return _dbContext.RangStarost
-                         .AsNoTracking()
-                         .Contains(model);
+        try
+        {
+            return _dbContext.RangStarost
+                .AsNoTracking()
+                .Contains(model.ToDbModel());
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public bool Exists(int id)
     {
-        var model = _dbContext.RangStarost
-                              .AsNoTracking()
-                              .FirstOrDefault(rang => rang.Id.Equals(id));
-        return model is not null;
-    }
-
-    public Option<RangStarost> Get(int id)
-    {
-        var model = _dbContext.RangStarost
-                              .AsNoTracking()
-                              .FirstOrDefault(rang => rang.Id.Equals(id));
-
-        return model is not null
-            ? Options.Some(model)
-            : Options.None<RangStarost>();
-    }
-
-
-    public IEnumerable<RangStarost> GetAll()
-    {
-        var models = _dbContext.RangStarost
-                               .ToList();
-
-        return models;
-    }
-
-
-    public bool Insert(RangStarost model)
-    {
-        if (_dbContext.RangStarost.Add(model).State == Microsoft.EntityFrameworkCore.EntityState.Added)
+        try
         {
-            var isSuccess = _dbContext.SaveChanges() > 0;
-
-            // every Add attaches the entity object and EF begins tracking
-            // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
-            _dbContext.Entry(model).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-
-            return isSuccess;
+            return _dbContext.RangStarost
+                .AsNoTracking()
+                .FirstOrDefault(starost => starost.Id.Equals(id)) != null;
         }
-
-        return false;
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
-    public bool Remove(int id)
+    public Result<RangStarost> Get(int id)
     {
-        var model = _dbContext.RangStarost
-                              .AsNoTracking()
-                              .FirstOrDefault(rang => rang.Id.Equals(id));
-
-        if (model is not null)
+        try
         {
-            _dbContext.RangStarost.Remove(model);
+            var starost = _dbContext.RangStarost
+                .AsNoTracking()
+                .FirstOrDefault(starost => starost.Id.Equals(id))?
+                .ToDomain();
 
-            return _dbContext.SaveChanges() > 0;
+            return starost is not null
+                ? Results.OnSuccess(starost)
+                : Results.OnFailure<RangStarost>($"No rang starost with such id {id}");
         }
-        return false;
+        catch (Exception e)
+        {
+            return Results.OnException<RangStarost>(e);
+        }
     }
 
-    public bool Update(RangStarost model)
+
+    public Result<IEnumerable<RangStarost>> GetAll()
     {
-        // detach
-        if (_dbContext.RangStarost.Update(model).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+        try
         {
-            var isSuccess = _dbContext.SaveChanges() > 0;
-
-            // every Update attaches the entity object and EF begins tracking
-            // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
-            _dbContext.Entry(model).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-
-            return isSuccess;
+            var starost = 
+                _dbContext.RangStarost
+                    .AsNoTracking()
+                    .Select(Mapping.ToDomain);
+            return Results.OnSuccess(starost);
         }
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<RangStarost>>(e);
+        }
+    }
 
-        return false;
+
+    public Result Insert(RangStarost model)
+    {
+        try
+        {
+            var dbModel = model.ToDbModel();
+            if (_dbContext.RangStarost.Add(dbModel).State == Microsoft.EntityFrameworkCore.EntityState.Added)
+            {
+                var isSuccess = _dbContext.SaveChanges() > 0;
+
+                // every Add attaches the entity object and EF begins tracking
+                // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
+                _dbContext.Entry(dbModel).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+
+                return isSuccess
+                    ? Results.OnSuccess()
+                    : Results.OnFailure();
+            }
+
+            return Results.OnFailure();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException(e);
+        }
+    }
+
+    public Result Remove(int id)
+    {
+        try
+        {
+            var model = _dbContext.RangStarost
+                .AsNoTracking()
+                .FirstOrDefault(starost => starost.Id.Equals(id));
+            if (model is not null)
+            {
+                _dbContext.RangStarost.Remove(model);
+
+                return _dbContext.SaveChanges() > 0
+                    ? Results.OnSuccess()
+                    : Results.OnFailure();
+            }
+            return Results.OnFailure();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException(e);
+        }
+    }
+
+    public Result Update(RangStarost model)
+    {
+        try
+        {
+            var dbModel = model.ToDbModel();
+            if (_dbContext.RangStarost.Update(dbModel).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+            {
+                var isSuccess = _dbContext.SaveChanges() > 0;
+
+                // every Update attaches the entity object and EF begins tracking
+                // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
+                _dbContext.Entry(dbModel).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+
+                return isSuccess
+                    ? Results.OnSuccess()
+                    : Results.OnFailure();
+            }
+
+            return Results.OnFailure();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException(e);
+        }
     }
 }

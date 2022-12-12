@@ -1,8 +1,7 @@
-﻿using Clanstvo.Commons;
-using Clanstvo.DataAccess.SqlServer.Data;
-using Clanstvo.DataAccess.SqlServer.Data.DbModels;
+﻿using Clanstvo.DataAccess.SqlServer.Data;
+using Clanstvo.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
+using BaseLibrary;
 
 namespace Clanstvo.Repositories.SqlServer;
 public class ClanarinaRepository : IClanarinaRepository
@@ -15,84 +14,142 @@ public class ClanarinaRepository : IClanarinaRepository
     }
     public bool Exists(Clanarina model)
     {
-        return _dbContext.Clanarina
-                         .AsNoTracking()
-                         .Contains(model);
+        try
+        {
+            return _dbContext.Clanarina
+                .AsNoTracking()
+                .Contains(model.ToDbModel());
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public bool Exists(int id)
     {
-        var model = _dbContext.Clanarina.
-                                AsNoTracking().
-                                FirstOrDefault(clanarina => clanarina.Id.Equals(id));
-        return model is not null;
+        try
+        {
+            var model = _dbContext.Clanarina
+                .AsNoTracking()
+                .FirstOrDefault(clanarina => clanarina.Id.Equals(id));
+            return model is not null;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
-    public Option<Clanarina> Get(int id)
+    public Result<Clanarina> Get(int id)
     {
+        try{
         var model = _dbContext.Clanarina
                               .AsNoTracking()
-                              .FirstOrDefault(clanarina => clanarina.Id.Equals(id));
+                              .FirstOrDefault(clanarina => clanarina.Id.Equals(id))
+                              .ToDomain();
 
         return model is not null
-            ? Options.Some(model)
-            : Options.None<Clanarina>();
-    }
-
-    public IEnumerable<Clanarina> GetAll()
-    {
-        var models = _dbContext.Clanarina
-                               .ToList();
-
-        return models;
-    }
-
-    public bool Insert(Clanarina model)
-    {
-        if (_dbContext.Clanarina.Add(model).State == Microsoft.EntityFrameworkCore.EntityState.Added)
-        {
-            var isSuccess = _dbContext.SaveChanges() > 0;
-
-            // every Add attaches the entity object and EF begins tracking
-            // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
-            _dbContext.Entry(model).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-
-            return isSuccess;
+            ? Results.OnSuccess(model)
+            : Results.OnFailure<Clanarina>($"No clanarina with id {id} found");
         }
-
-        return false;
+        catch (Exception e)
+        {
+            return Results.OnException<Clanarina>(e);
+        }
     }
 
-    public bool Remove(int id)
+    public Result<IEnumerable<Clanarina>> GetAll()
     {
-        var model = _dbContext.Clanarina
-                               .AsNoTracking()
-                               .FirstOrDefault(clanarina => clanarina.Id.Equals(id));
-
-        if (model is not null)
+        try
         {
-            _dbContext.Clanarina.Remove(model);
+            var models = _dbContext.Clanarina
+                .AsNoTracking()
+                .Select(Mapping.ToDomain);
 
-            return _dbContext.SaveChanges() > 0;
+            return Results.OnSuccess(models);
         }
-        return false;
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<Clanarina>>(e);
+        }
     }
 
-    public bool Update(Clanarina model)
+    public Result Insert(Clanarina model)
     {
-        // detach
-        if (_dbContext.Clanarina.Update(model).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+        try
         {
-            var isSuccess = _dbContext.SaveChanges() > 0;
+            var dbModel = model.ToDbModel();
+            if (_dbContext.Clanarina.Add(dbModel).State == Microsoft.EntityFrameworkCore.EntityState.Added)
+            {
+                var isSuccess = _dbContext.SaveChanges() > 0;
 
-            // every Update attaches the entity object and EF begins tracking
-            // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
-            _dbContext.Entry(model).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+                // every Add attaches the entity object and EF begins tracking
+                // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
+                _dbContext.Entry(dbModel).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
 
-            return isSuccess;
+                return isSuccess
+                    ? Results.OnSuccess()
+                    : Results.OnFailure();
+            }
+
+            return Results.OnFailure();
         }
+        catch (Exception e)
+        {
+            return Results.OnException(e);
+        }
+    }
 
-        return false;
+    public Result Remove(int id)
+    {
+        try
+        {
+            var model = _dbContext.Clanarina
+                .AsNoTracking()
+                .FirstOrDefault(clanarina => clanarina.Id.Equals(id));
+
+            if (model is not null)
+            {
+                _dbContext.Clanarina.Remove(model);
+
+                return _dbContext.SaveChanges() > 0
+                    ? Results.OnSuccess()
+                    : Results.OnFailure();
+            }
+            return Results.OnFailure();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException(e);
+        }
+    }
+
+    public Result Update(Clanarina model)
+    {
+        try
+        {
+            var dbModel = model.ToDbModel();
+            // detach
+            if (_dbContext.Clanarina.Update(dbModel).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+            {
+                var isSuccess = _dbContext.SaveChanges() > 0;
+
+                // every Update attaches the entity object and EF begins tracking
+                // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
+                _dbContext.Entry(dbModel).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+
+                return isSuccess
+                    ? Results.OnSuccess()
+                    : Results.OnFailure();
+            }
+
+            return Results.OnFailure();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException(e);
+        }
     }
 }
 

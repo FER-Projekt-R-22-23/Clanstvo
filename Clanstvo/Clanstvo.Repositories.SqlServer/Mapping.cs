@@ -53,14 +53,24 @@ public static class Mapping
             ClanId = clanarina.ClanId,
             Datum = clanarina.Datum
         };
+    
 
-    //mozda dodati za ClanRangStarost i ClanRangZasluga (roleAssignment i PersonRole)
-
-    /*public static ClanRangStarost ToDomain(this DbModels.ClanRangStarost clanRangStarost)
-        => new ClanRangStarost(
-            clanRangStarost.Datum,
-            clanRangStarost.RangStarost.ToDomain()
-            );*/
+    public static DbModels.ClanRangZasluga ToDbModel(this DodjelaZasluga dodjelaZasluga, int clanId)
+        => new DbModels.ClanRangZasluga()
+        {
+            ClanId = clanId,
+            RangZaslugaId= dodjelaZasluga.RangZasluga.Id,
+            Datum = dodjelaZasluga.Datum
+        };
+    
+    
+    public static DbModels.ClanRangStarost ToDbModel(this DodjelaStarost dodjelaStarost, int clanId)
+        => new DbModels.ClanRangStarost()
+        {
+            ClanId = clanId,
+            RangStarostId= dodjelaStarost.RangStarost.Id,
+            Datum = dodjelaStarost.Datum
+        };
 
     public static Clan ToDomain(this DbModels.Clan clan)
         => new Clan(
