@@ -5,6 +5,7 @@ using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
 using Clanstvo.Commons;
 using BaseLibrary;
 using System;
+using System.Data;
 
 namespace ClanstvoWebApi.Controllers;
 [Route("api/[controller]")]
@@ -115,5 +116,135 @@ public class ClanController : ControllerBase
         return deleteResult
             ? NoContent()
             : Problem(deleteResult.Message, statusCode: 500);
+    }
+
+    [HttpPost("DodajRangStarost/{clanId}")]
+    public IActionResult AssignClanToRangStarost(int clanId, DodjelaStarost dodjelaStarost)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var clanResult = _clanRepository.GetAggregate(clanId);
+        if (clanResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (clanResult.IsException)
+        {
+            return Problem(clanResult.Message, statusCode: 500);
+        }
+
+        var clan = clanResult.Data;
+
+        clan.DodajRangStarost(
+            dodjelaStarost.RangStarost.ToDomain(),
+            dodjelaStarost.Datum
+            );
+
+        var updateResult = _clanRepository.UpdateAggregate(clan);
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
+    [HttpPost("DodajRangZasluga/{clanId}")]
+    public IActionResult AssignClanToRangZasluga(int clanId, DodjelaZasluga dodjelaZasluga)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var clanResult = _clanRepository.GetAggregate(clanId);
+        if (clanResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (clanResult.IsException)
+        {
+            return Problem(clanResult.Message, statusCode: 500);
+        }
+
+        var clan = clanResult.Data;
+
+        clan.DodajRangZasluga(
+            dodjelaZasluga.RangZasluga.ToDomain(),
+            dodjelaZasluga.Datum
+            );
+
+        var updateResult = _clanRepository.UpdateAggregate(clan);
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
+    [HttpPost("UkloniRangStarost/{clanId}")]
+    public IActionResult DismissClanFromRangStarost(int clanId, RangStarost rang)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var clanResult = _clanRepository.GetAggregate(clanId);
+        if (clanResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (clanResult.IsException)
+        {
+            return Problem(clanResult.Message, statusCode: 500);
+        }
+
+        var clan = clanResult.Data;
+
+
+        if (!clan.UkloniRangStarost(rang.ToDomain()))
+        {
+            return NotFound($"Couldn't find rang {rang.Naziv} on clan");
+        }
+
+        var updateResult = _clanRepository.UpdateAggregate(clan);
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
+    [HttpPost("UkloniRangZasluga/{clanId}")]
+    public IActionResult DismissClanFromRangZasluga(int clanId, RangZasluga rang)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var clanResult = _clanRepository.GetAggregate(clanId);
+        if (clanResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (clanResult.IsException)
+        {
+            return Problem(clanResult.Message, statusCode: 500);
+        }
+
+        var clan = clanResult.Data;
+
+
+        if (!clan.UkloniRangZasluga(rang.ToDomain()))
+        {
+            return NotFound($"Couldn't find rang {rang.Naziv} on clan");
+        }
+
+        var updateResult = _clanRepository.UpdateAggregate(clan);
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
     }
 }
