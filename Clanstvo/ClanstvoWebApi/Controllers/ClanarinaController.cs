@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Clanstvo.Repositories;
+using Clanstvo.Repositories.SqlServer;
 using ClanstvoWebApi.DTOs;
 using DbModels = Clanstvo.DataAccess.SqlServer.Data.DbModels;
 using Clanstvo.Commons;
@@ -31,6 +32,20 @@ namespace ClanstvoWebApi.Controllers
                 ? Ok(clanarinaResults.Data)
                 : Problem(clanarinaResults.Message, statusCode: 500);
         }
+
+        
+        // GET: api/Clanarine
+        [HttpGet("/api/[controller]/Neplacene")]
+        public ActionResult<IEnumerable<Clanarina>> GetNeplaceneClanarina()
+        {
+            var clanarinaResults = _clanarinaRepository.GetAllNeplacene()
+            .Map(clanarina => clanarina.Select(DtoMapping.ToDto));
+
+            return clanarinaResults
+                ? Ok(clanarinaResults.Data)
+                : Problem(clanarinaResults.Message, statusCode: 500);
+        }
+
 
         // GET: api/Clanarine/5
         [HttpGet("{id}")]

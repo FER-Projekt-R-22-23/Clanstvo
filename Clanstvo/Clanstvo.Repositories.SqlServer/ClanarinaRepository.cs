@@ -75,6 +75,23 @@ public class ClanarinaRepository : IClanarinaRepository
         }
     }
 
+    public Result<IEnumerable<Clanarina>> GetAllNeplacene()
+    {
+        try
+        {
+            var models = _dbContext.Clanarina
+                .Where(clanarina => clanarina.Placenost == false)
+                .AsNoTracking()
+                .Select(Mapping.ToDomain);
+
+            return Results.OnSuccess(models);
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<Clanarina>>(e);
+        }
+    }
+
     public Result Insert(Clanarina model)
     {
         try
