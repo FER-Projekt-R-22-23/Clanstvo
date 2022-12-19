@@ -6,6 +6,7 @@ using Clanstvo.Commons;
 using BaseLibrary;
 using System;
 using System.Data;
+using Clanstvo.Repositories.SqlServer;
 
 namespace ClanstvoWebApi.Controllers;
 [Route("api/[controller]")]
@@ -57,7 +58,17 @@ public class ClanController : ControllerBase
             ? Ok(clanResults.Data)
             : Problem(clanResults.Message, statusCode: 500);
     }
-    
+
+    [HttpGet("/api/[controller]/RangoviZasluga")]
+    public ActionResult<IEnumerable<Clan_NijePlatio>> GetRangoviZasluga()
+    {
+        var clanResults = _clanRepository.GetRangoviZasluga()
+            .Map(clan => clan.Select(DtoMapping.ToAggregateDto3));
+
+        return clanResults
+            ? Ok(clanResults.Data)
+            : Problem(clanResults.Message, statusCode: 500);
+    }
 
     // GET: api/Clanovi/5
     [HttpGet("{id}")]
@@ -86,7 +97,7 @@ public class ClanController : ControllerBase
         };
     }
 
-    [HttpGet("/NijePlatio/{id}")]
+    [HttpGet("/api/[controller]/NijePlatio/{id}")]
     public ActionResult<Clan_NijePlatio> GetNijePlatio(int id)
     {
         var clanResult = _clanRepository.GetNijePlatio(id).Map(DtoMapping.ToAggregateDto2);
@@ -99,6 +110,18 @@ public class ClanController : ControllerBase
         };
     }
 
+    [HttpGet("/api/[controller]/RangZasluga/{id}")]
+    public ActionResult<Clan_NijePlatio> GetRangZasluga(int id)
+    {
+        var clanResult = _clanRepository.GetRangZasluga(id).Map(DtoMapping.ToAggregateDto3);
+
+        return clanResult switch
+        {
+            { IsSuccess: true } => Ok(clanResult.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(clanResult.Message, statusCode: 500)
+        };
+    }
 
     // PUT: api/Clan/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

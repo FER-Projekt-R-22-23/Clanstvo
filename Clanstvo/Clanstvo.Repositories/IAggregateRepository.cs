@@ -19,6 +19,7 @@ namespace Clanstvo.Repositories
 
         Result<TAggregate> GetNijePlatio(TKey id);
 
+        Result<TAggregate> GetRangZasluga(TKey id);
         /// <summary>
         /// Gets all aggregates
         /// </summary>
@@ -27,6 +28,7 @@ namespace Clanstvo.Repositories
 
         Result<IEnumerable<TAggregate>> GetNisuPlatili();
 
+        Result<IEnumerable<TAggregate>> GetRangoviZasluga();
         /// <summary>
         /// Updates the entire aggregate
         /// </summary>

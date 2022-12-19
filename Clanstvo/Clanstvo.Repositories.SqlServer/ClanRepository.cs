@@ -87,6 +87,30 @@ public class ClanRepository : IClanRepository
 
     }
 
+    public Result<Clan> GetRangZasluga(int id)
+    {
+        try
+        {
+            var model = _dbContext.Clan
+                .Include(clan => clan.ClanRangZasluga)
+                .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
+                .AsNoTracking()
+                .FirstOrDefault(clan => clan.Id.Equals(id))?
+                .ToDomain(); // give me the first or null; substitute for .Where()
+            // single or default throws an exception if more than one element meets the criteria
+
+            return model is not null
+                ? Results.OnSuccess(model)
+                : Results.OnFailure<Clan>();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<Clan>(e);
+        }
+
+    }
+
+
     public Result<Clan> GetAggregate(int id)
     {
         try
@@ -157,6 +181,24 @@ public class ClanRepository : IClanRepository
             var models = _dbContext.Clan
                 .Where(clan => clan.Clanarina.Any(clanarina => clanarina.Placenost == false))
                 .Include(clan => clan.Clanarina.Where(clanarina => clanarina.Placenost == false))
+                .AsNoTracking()
+                .Select(Mapping.ToDomain);
+
+            return Results.OnSuccess(models);
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<Clan>>(e);
+        }
+    }
+
+    public Result<IEnumerable<Clan>> GetRangoviZasluga()
+    {
+        try
+        {
+            var models = _dbContext.Clan
+                .Include(clan => clan.ClanRangZasluga)
+                .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
                 .AsNoTracking()
                 .Select(Mapping.ToDomain);
 
