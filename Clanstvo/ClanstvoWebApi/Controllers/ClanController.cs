@@ -33,6 +33,22 @@ public class ClanController : ControllerBase
             : Problem(clanResults.Message, statusCode: 500);
     }
 
+    
+    // GET: api/Clanovi
+    [HttpGet("/api/[controller]/Neplacene")]
+    public ActionResult<IEnumerable<Clan>> GetNisuPlatili()
+    {
+
+        var clanResults = _clanRepository.GetNisuPlatili()
+            .Map(clan => clan.Select(DtoMapping.ToDto));
+
+        return clanResults
+            ? Ok(clanResults.Data)
+            : Problem(clanResults.Message, statusCode: 500);
+    }
+    
+
+
     // GET: api/Clanovi/5
     [HttpGet("{id}")]
     public ActionResult<Clan> GetClan(int id)

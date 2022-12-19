@@ -90,6 +90,23 @@ public class ClanRepository : IClanRepository
 
     }
 
+    public Result<IEnumerable<Clan>> GetNisuPlatili()
+    {
+        try
+        {
+            var models = _dbContext.Clan
+                .Where(clan => clan.Clanarina.Any(clanarina => clanarina.Placenost == false))
+                .AsNoTracking()
+                .Select(Mapping.ToDomain);
+
+            return Results.OnSuccess(models);
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<Clan>>(e);
+        }
+    }
+
     public Result<IEnumerable<Clan>> GetAll()
     {
         try

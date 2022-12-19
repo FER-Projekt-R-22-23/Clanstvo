@@ -1,3 +1,4 @@
+using BaseLibrary;
 using Clanstvo.Domain.Models;
 using System;
 
@@ -12,4 +13,5 @@ public interface IClanRepository
     : IRepository<int, Clan>,
       IAggregateRepository<int, Clan>
 {
+    Result<IEnumerable<Clan>> GetNisuPlatili();
 }

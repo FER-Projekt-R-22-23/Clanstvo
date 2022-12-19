@@ -60,6 +60,20 @@ namespace ClanstvoWebApi.DTOs
                 clan.DatumMarama,
                 clan.MjestoMarama
             );
+
+        public static Clan ToDto_NisuPlatili(this DomainModels.Clan clan)
+            => new Clan()
+            {
+                Id = clan.Id,
+                Ime = clan.Ime,
+                Prezime = clan.Prezime,
+                Slika = clan.Slika,
+                DatumRodenja = clan.DatumRodenja,
+                Adresa = clan.Adresa,
+                ImaMaramu = clan.ImaMaramu,
+                DatumMarama = clan.DatumMarama,
+                MjestoMarama = clan.MjestoMarama,
+            };
     }
 }
 
