@@ -13,5 +13,4 @@ public interface IClanRepository
     : IRepository<int, Clan>,
       IAggregateRepository<int, Clan>
 {
-    Result<IEnumerable<Clan>> GetNisuPlatili();
 }

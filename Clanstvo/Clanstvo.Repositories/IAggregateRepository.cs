@@ -17,11 +17,15 @@ namespace Clanstvo.Repositories
         /// <returns>Option of <c>TAggregate</c></returns>
         Result<TAggregate> GetAggregate(TKey id);
 
+        Result<TAggregate> GetNijePlatio(TKey id);
+
         /// <summary>
         /// Gets all aggregates
         /// </summary>
         /// <returns><c>IEnumerable</c> of <c>TAggregate</c></returns>
         Result<IEnumerable<TAggregate>> GetAllAggregates();
+
+        Result<IEnumerable<TAggregate>> GetNisuPlatili();
 
         /// <summary>
         /// Updates the entire aggregate

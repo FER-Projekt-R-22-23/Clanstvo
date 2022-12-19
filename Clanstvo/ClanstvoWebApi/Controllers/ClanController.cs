@@ -34,20 +34,30 @@ public class ClanController : ControllerBase
     }
 
     
-    // GET: api/Clanovi
-    [HttpGet("/api/[controller]/Neplacene")]
-    public ActionResult<IEnumerable<Clan>> GetNisuPlatili()
+    [HttpGet("AllAggregates")]
+    public ActionResult<IEnumerable<ClanAggregate>> GetAllAggregate()
     {
 
+        var clanResults = _clanRepository.GetAllAggregates()
+            .Map(clan => clan.Select(DtoMapping.ToAggregateDto));
+
+        return clanResults
+            ? Ok(clanResults.Data)
+            : Problem(clanResults.Message, statusCode: 500);
+    }
+
+    
+    [HttpGet("/api/[controller]/NisuPlatili")]
+    public ActionResult<IEnumerable<Clan_NijePlatio>> GetNisuPlatili()
+    {
         var clanResults = _clanRepository.GetNisuPlatili()
-            .Map(clan => clan.Select(DtoMapping.ToDto));
+            .Map(clan => clan.Select(DtoMapping.ToAggregateDto2));
 
         return clanResults
             ? Ok(clanResults.Data)
             : Problem(clanResults.Message, statusCode: 500);
     }
     
-
 
     // GET: api/Clanovi/5
     [HttpGet("{id}")]
@@ -76,7 +86,20 @@ public class ClanController : ControllerBase
         };
     }
 
-    
+    [HttpGet("/NijePlatio/{id}")]
+    public ActionResult<Clan_NijePlatio> GetNijePlatio(int id)
+    {
+        var clanResult = _clanRepository.GetNijePlatio(id).Map(DtoMapping.ToAggregateDto2);
+
+        return clanResult switch
+        {
+            { IsSuccess: true } => Ok(clanResult.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(clanResult.Message, statusCode: 500)
+        };
+    }
+
+
     // PUT: api/Clan/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
