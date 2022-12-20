@@ -19,8 +19,8 @@ namespace ClanstvoWebApi.DTOs
         //public IEnumerable<DodjelaZasluga> DodjeleZasluga { get; set; } = Enumerable.Empty<DodjelaZasluga>();
 
 
-        public int RangId { get; set; }
-        public string NazivRanga { get; set; } = string.Empty;
+        public int? RangId { get; set; }
+        public string? NazivRanga { get; set; } = string.Empty;
 
     }
     public static partial class DtoMapping
@@ -31,8 +31,8 @@ namespace ClanstvoWebApi.DTOs
                 Id = clan.Id,
                 Ime = clan.Ime,
                 Prezime = clan.Prezime,
-                RangId = clan.DodjeleZasluga.MaxBy(d => d.Datum).RangZasluga.Id,
-                NazivRanga = clan.DodjeleZasluga.MaxBy(d => d.Datum).RangZasluga.Naziv,
+                RangId = clan.DodjeleZasluga?.MaxBy(d => d.Datum)?.RangZasluga.Id,
+                NazivRanga = clan.DodjeleZasluga?.MaxBy(d => d.Datum)?.RangZasluga.Naziv,
 
                 //DodjeleZasluga = clan.DodjeleZasluga == null
                   //              ? new List<DodjelaZasluga>()
