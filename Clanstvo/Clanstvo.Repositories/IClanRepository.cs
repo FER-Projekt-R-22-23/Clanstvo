@@ -11,6 +11,7 @@ namespace Clanstvo.Repositories;
 /// <typeparam name="TDomainModel"></typeparam
 public interface IClanRepository
     : IRepository<int, Clan>,
-      IAggregateRepository<int, Clan>
+      IAggregateRepository<int, Clan>,
+    IIzvedniClanRepository<int, Clan>
 {
 }
