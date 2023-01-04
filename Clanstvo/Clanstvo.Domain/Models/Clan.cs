@@ -118,6 +118,23 @@ public class Clan : AggregateRoot<int>
                 _dodjeleZasluga.Remove(trazenaDodjela);
     }
 
+    public bool DodajMaramu(string mjestoMarama, DateTime? datum = null)
+    {
+        datum ??= DateTime.Now;
+        _imaMaramu = true;
+        _mjestoMarama = mjestoMarama;
+        _datumMarama = datum;
+        return true;
+    }
+
+    public bool UkoloniMaramu()
+    {
+        _imaMaramu = false;
+        _mjestoMarama = null;
+        _datumMarama = null;
+        return true;
+    }
+
 
 
     public override bool Equals(object? obj)

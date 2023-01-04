@@ -325,4 +325,69 @@ public class ClanController : ControllerBase
             ? Accepted()
             : Problem(updateResult.Message, statusCode: 500);
     }
+
+    [HttpPost("DodajMaramu/{clanId}")]
+    public IActionResult DodajMaramu(int clanId, string mjestoMarama)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var clanResult = _clanRepository.Get(clanId);
+        if (clanResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (clanResult.IsException)
+        {
+            return Problem(clanResult.Message, statusCode: 500);
+        }
+
+        var clan = clanResult.Data;
+
+        clan.DodajMaramu(
+            mjestoMarama
+            );
+
+        var updateResult = _clanRepository.Update(clan);
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
+    [HttpPost("UkloniMaramu/{clanId}")]
+    public IActionResult UkloniMaramu(int clanId)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var clanResult = _clanRepository.Get(clanId);
+        if (clanResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (clanResult.IsException)
+        {
+            return Problem(clanResult.Message, statusCode: 500);
+        }
+
+        var clan = clanResult.Data;
+
+
+        if (!clan.UkoloniMaramu())
+        {
+            return NotFound($"Couldn't find clan with id {clanId}");
+        }
+
+        var updateResult = _clanRepository.Update(clan);
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
 }
