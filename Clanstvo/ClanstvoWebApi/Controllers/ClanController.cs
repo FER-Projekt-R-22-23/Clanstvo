@@ -48,16 +48,32 @@ public class ClanController : ControllerBase
     }
 
     
-    [HttpGet("/api/[controller]/NisuPlatili")]
-    public ActionResult<IEnumerable<Clan_NijePlatio>> GetNisuPlatili()
+    [HttpGet("/api/[controller]/SviNisuPlatili")]
+    public ActionResult<IEnumerable<Clan_NijePlatio>> GetSviNisuPlatili()
     {
-        var clanResults = _clanRepository.GetNisuPlatili()
+        var clanResults = _clanRepository.GetSviNisuPlatili()
             .Map(clan => clan.Select(DtoMapping.ToAggregateDto2));
 
         return clanResults
             ? Ok(clanResults.Data)
             : Problem(clanResults.Message, statusCode: 500);
     }
+
+
+    
+    [HttpGet("/api/[controller]/NisuPlatili")]
+    public ActionResult<IEnumerable<Clan_NijePlatio>> GetNisuPlatili([FromQuery] int[] ids)
+    {
+        var clanResults = (ids.Length == 0
+            ? _clanRepository.GetSviNisuPlatili() 
+            : _clanRepository.GetNisuPlatili(ids))
+            .Map(clan => clan.Select(DtoMapping.ToAggregateDto2));
+
+        return clanResults
+            ? Ok(clanResults.Data)
+            : Problem(clanResults.Message, statusCode: 500);
+    }
+    
 
     [HttpGet("/api/[controller]/RangoviZasluga")]
     public ActionResult<IEnumerable<Clan_NijePlatio>> GetRangoviZasluga()

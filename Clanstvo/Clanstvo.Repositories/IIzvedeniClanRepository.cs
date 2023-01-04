@@ -26,7 +26,9 @@ namespace Clanstvo.Repositories
         /// <returns><c>IEnumerable</c> of <c>TAggregate</c></returns>
         //Result<IEnumerable<TAggregate>> GetAllAggregates();
 
-        Result<IEnumerable<TAggregate>> GetNisuPlatili();
+        Result<IEnumerable<TAggregate>> GetSviNisuPlatili();
+
+        Result<IEnumerable<TAggregate>> GetNisuPlatili(TKey[] ids);
 
         Result<IEnumerable<TAggregate>> GetRangoviZasluga();
         /// <summary>

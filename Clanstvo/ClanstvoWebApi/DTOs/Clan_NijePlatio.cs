@@ -30,7 +30,8 @@ namespace ClanstvoWebApi.DTOs
                 Prezime = clan.Prezime,
                 Clanarina = clan.Clanarina == null
                                 ? new List<Clanarina>()
-                                : clan.Clanarina.Select(pr => pr.ToDto()).ToList()
+                                : clan.Clanarina.Where(clanarina => clanarina.Placenost == false)
+                                    .Select(pr => pr.ToDto()).ToList()
             };
 
         /*public static DomainModels.Clan ToDomain(this Clan_NijePlatio clan)
