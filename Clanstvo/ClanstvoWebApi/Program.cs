@@ -23,6 +23,12 @@ builder.Services.AddTransient<IClanarinaRepository, ClanarinaRepository>();
 builder.Services.AddTransient<IRangStarostRepository, RangStarostRepository>();
 builder.Services.AddTransient<IRangZaslugaRepository, RangZaslugaRepository>();
 
+HttpClientHandler clientHandler = new HttpClientHandler();
+clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+builder.Services.AddHttpClient("AkcijeSkole", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7080");
+}).ConfigurePrimaryHttpMessageHandler(x => clientHandler);
 
 // Add services to the container.
 
