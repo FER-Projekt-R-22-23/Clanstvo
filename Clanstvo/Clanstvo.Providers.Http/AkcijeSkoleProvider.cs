@@ -11,22 +11,36 @@ public class AkcijeSkoleProvider : IAkcijeSkoleProvider
 
     public AkcijeSkoleProvider(IHttpClientFactory httpClientFactory)
     {
-        _httpClient = httpClientFactory.CreateClient("Clanstvo");
+        _httpClient = httpClientFactory.CreateClient("AkcijeSkole");
     }
 
     
     public Result<IEnumerable<Akcija>> GetAkcijeClana(int id)
     {
-        var akcijaResult = _httpClient.GetFromJsonAsync<IEnumerable<Akcija>>("api/polaznici/");
+        var akcijaResult = _httpClient.GetFromJsonAsync<IEnumerable<AkcijaSudionik>>("api/polaznici/");
 
         if (akcijaResult.Result != null)
         {
-            var clanovi = akcijaResult.Result.Select(c => Akcija.DtoMapping.ToDomain(c));
+            var akcije = akcijaResult.Result.Select(c => AkcijaSudionik.DtoMapping.ToDomain(c));
 
-            return Results.OnSuccess(clanovi);
+            return Results.OnSuccess(akcije);
         }
 
         return Results.OnFailure<IEnumerable<Akcija>>("Clanovi nemaju neplacenih clanarina");
     }
-    
+
+    public Result<IEnumerable<Skola>> GetSkoleClana(int id)
+    {
+        var skolaResult = _httpClient.GetFromJsonAsync<IEnumerable<SkolaSudionik>>("api/polaznici/");
+
+        if (skolaResult.Result != null)
+        {
+            var skole = skolaResult.Result.Select(c => SkolaSudionik.DtoMapping.ToDomain(c));
+
+            return Results.OnSuccess(skole);
+        }
+
+        return Results.OnFailure<IEnumerable<Skola>>("Clanovi nemaju neplacenih clanarina");
+    }
+
 }
