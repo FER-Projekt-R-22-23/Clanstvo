@@ -30,7 +30,9 @@ namespace Clanstvo.Repositories
 
         Result<IEnumerable<TAggregate>> GetNisuPlatili(TKey[] ids);
 
-        Result<IEnumerable<TAggregate>> GetRangoviZasluga();
+        Result<IEnumerable<TAggregate>> GetSviRangoviZasluga();
+
+        Result<IEnumerable<TAggregate>> GetRangoviZasluga(TKey[] ids);
         /// <summary>
         /// Updates the entire aggregate
         /// </summary>

@@ -214,11 +214,30 @@ public class ClanRepository : IClanRepository
         }
     }
 
-    public Result<IEnumerable<Clan>> GetRangoviZasluga()
+    public Result<IEnumerable<Clan>> GetSviRangoviZasluga()
     {
         try
         {
             var models = _dbContext.Clan
+                .Include(clan => clan.ClanRangZasluga)
+                .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
+                .AsNoTracking()
+                .Select(Mapping.ToDomain);
+
+            return Results.OnSuccess(models);
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<Clan>>(e);
+        }
+    }
+
+    public Result<IEnumerable<Clan>> GetRangoviZasluga(int[] ids)
+    {
+        try
+        {
+            var models = _dbContext.Clan
+                .Where(clan => ids.Contains(clan.Id))
                 .Include(clan => clan.ClanRangZasluga)
                 .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
                 .AsNoTracking()
