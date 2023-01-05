@@ -18,19 +18,29 @@ public class AkcijeController : ControllerBase
         _akcijeSkoleProvider = akcijeSkoleProvider;
     }
 
-    //[HttpGet("Akcije")]
-    /*
-    public ActionResult<IEnumerable<Akcija>> GetNeplaceneClanarine([FromQuery] int[] listOfIds)
+    [HttpGet("Akcije")]
+    public ActionResult<IEnumerable<AkcijaSudionik>> GetAkcijeSudionika([FromQuery] int id)
     {
-        var akcijaResult = _akcijeSkoleProvider.GetDidntPay(listOfIds.ToList())
-            .Map(c => c.Select(clanarina => clanarina.ToDto()));
+        var akcijaResult = _akcijeSkoleProvider.GetAkcijeClana(id);
 
-        Console.WriteLine(clanoviResult.Data);
+        Console.WriteLine(akcijaResult.Data);
 
-        return clanoviResult
-            ? Ok(clanoviResult.Data)
-            : Problem(clanoviResult.Message, statusCode: 500);
+        return akcijaResult
+            ? Ok(akcijaResult.Data)
+            : Problem(akcijaResult.Message, statusCode: 500);
     }
-    */
+
+    [HttpGet("Skole")]
+    public ActionResult<IEnumerable<SkolaSudionik>> GetSkoleSudionika([FromQuery] int id)
+    {
+        var skolaResult = _akcijeSkoleProvider.GetSkoleClana(id);
+
+        Console.WriteLine(skolaResult.Data);
+
+        return skolaResult
+            ? Ok(skolaResult.Data)
+            : Problem(skolaResult.Message, statusCode: 500);
+    }
+
 
 }

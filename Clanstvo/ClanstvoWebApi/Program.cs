@@ -38,7 +38,7 @@ builder.Services.AddHttpClient("Udruge", client =>
 builder.Services.AddHttpClient("Akcije/Skole", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration
-        .GetSection("RemoteServices").GetValue<String>("AkcijeISkole"));
+        .GetSection("RemoteServices").GetValue<String>("AkcijeSkole"));
 }).ConfigurePrimaryHttpMessageHandler(x => clientHandler);
 
 // Add services to the container.

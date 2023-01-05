@@ -17,7 +17,7 @@ public class AkcijeSkoleProvider : IAkcijeSkoleProvider
     
     public Result<IEnumerable<Akcija>> GetAkcijeClana(int id)
     {
-        var akcijaResult = _httpClient.GetFromJsonAsync<IEnumerable<AkcijaSudionik>>("api/polaznici/");
+        var akcijaResult = _httpClient.GetFromJsonAsync<IEnumerable<AkcijaSudionik>>("/polaznici/");
 
         if (akcijaResult.Result != null)
         {
@@ -31,7 +31,7 @@ public class AkcijeSkoleProvider : IAkcijeSkoleProvider
 
     public Result<IEnumerable<Skola>> GetSkoleClana(int id)
     {
-        var skolaResult = _httpClient.GetFromJsonAsync<IEnumerable<SkolaSudionik>>("api/polaznici/");
+        var skolaResult = _httpClient.GetFromJsonAsync<IEnumerable<SkolaSudionik>>("/polaznici/");
 
         if (skolaResult.Result != null)
         {
