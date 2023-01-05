@@ -4,6 +4,8 @@ using Clanstvo.DataAccess.SqlServer.Data;
 using Clanstvo.DataAccess.SqlServer.Data.DbModels;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using Clanstvo.Providers;
+using Clanstvo.Providers.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +24,22 @@ builder.Services.AddTransient<IClanRepository, ClanRepository>();
 builder.Services.AddTransient<IClanarinaRepository, ClanarinaRepository>();
 builder.Services.AddTransient<IRangStarostRepository, RangStarostRepository>();
 builder.Services.AddTransient<IRangZaslugaRepository, RangZaslugaRepository>();
+builder.Services.AddTransient<IAkcijeSkoleProvider, AkcijeSkoleProvider>();
 
+HttpClientHandler clientHandler = new HttpClientHandler();
+clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+builder.Services.AddHttpClient("Udruge", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration
+            .GetSection("RemoteServices").GetValue<String>("Udruge"));
+}).ConfigurePrimaryHttpMessageHandler(x => clientHandler);
+
+builder.Services.AddHttpClient("Akcije/Skole", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration
+        .GetSection("RemoteServices").GetValue<String>("AkcijeISkole"));
+}).ConfigurePrimaryHttpMessageHandler(x => clientHandler);
 
 // Add services to the container.
 
