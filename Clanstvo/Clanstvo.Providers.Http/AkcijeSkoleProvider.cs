@@ -33,7 +33,7 @@ public class AkcijeSkoleProvider : IAkcijeSkoleProvider
             }
         }
 
-        if (akcijeResult!.Any())
+        if (akcijeResult != null) // skoleResult!.Any() => onda baci 404 i poruku a ne praznu listu
         {
             var akcije = akcijeResult!.Select(a => AkcijaSudionik.DtoMapping.ToDomain(a));
 
@@ -58,7 +58,7 @@ public class AkcijeSkoleProvider : IAkcijeSkoleProvider
             }
         }
 
-        if (skoleResult!.Any())
+        if (skoleResult != null) // skoleResult!.Any() => onda baci 404 i poruku a ne praznu listu
         {
             var akcije = skoleResult!.Select(a => SkolaSudionik.DtoMapping.ToDomain(a));
 
