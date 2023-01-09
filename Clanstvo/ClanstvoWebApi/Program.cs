@@ -31,14 +31,17 @@ clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, 
 
 builder.Services.AddHttpClient("Udruge", client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration
-            .GetSection("RemoteServices").GetValue<String>("Udruge"));
+    //client.BaseAddress = new Uri(builder.Configuration
+    //        .GetSection("RemoteServices").GetValue<String>("Udruge"));
+
+    client.BaseAddress = new Uri("https://localhost:7080");
 }).ConfigurePrimaryHttpMessageHandler(x => clientHandler);
 
-builder.Services.AddHttpClient("Akcije/Skole", client =>
+builder.Services.AddHttpClient("AkcijeSkole", client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration
-        .GetSection("RemoteServices").GetValue<String>("AkcijeSkole"));
+    //client.BaseAddress = new Uri(builder.Configuration
+    //    .GetSection("RemoteServices").GetValue<String>("AkcijeSkole"));
+    client.BaseAddress = new Uri("https://localhost:7080");
 }).ConfigurePrimaryHttpMessageHandler(x => clientHandler);
 
 // Add services to the container.

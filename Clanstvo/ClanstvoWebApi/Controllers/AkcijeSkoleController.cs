@@ -21,7 +21,8 @@ public class AkcijeSkoleController : ControllerBase
     [HttpGet("Akcije")]
     public ActionResult<IEnumerable<AkcijaSudionik>> GetAkcijeSudionika(int id)
     {
-        var akcijaResult = _akcijeSkoleProvider.GetAkcijeClana(id);
+        var akcijaResult = _akcijeSkoleProvider.GetAkcijeClana(id)
+            .Map(a => a.Select(akcija => akcija.ToDto()));
 
         Console.WriteLine(akcijaResult.Data);
 
