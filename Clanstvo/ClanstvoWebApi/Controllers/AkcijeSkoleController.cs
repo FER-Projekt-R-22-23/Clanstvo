@@ -28,19 +28,20 @@ public class AkcijeSkoleController : ControllerBase
 
         return akcijaResult
             ? Ok(akcijaResult.Data)
-            : Problem(akcijaResult.Message, statusCode: 500);
+            : Problem(akcijaResult.Message, statusCode: 404);
     }
 
     [HttpGet("Skole")]
     public ActionResult<IEnumerable<SkolaSudionik>> GetSkoleSudionika(int id)
     {
-        var skolaResult = _akcijeSkoleProvider.GetSkoleClana(id);
+        var skolaResult = _akcijeSkoleProvider.GetSkoleClana(id)
+            .Map(s => s.Select(skola => skola.ToDto()));
 
         Console.WriteLine(skolaResult.Data);
 
         return skolaResult
             ? Ok(skolaResult.Data)
-            : Problem(skolaResult.Message, statusCode: 500);
+            : Problem(skolaResult.Message, statusCode: 404);
     }
 
 

@@ -17,7 +17,7 @@ public class AkcijeSkoleProvider : IAkcijeSkoleProvider
     
     public Result<IEnumerable<Akcija>> GetAkcijeClana(int id)
     {
-        var akcijaResult = _httpClient.GetFromJsonAsync<IEnumerable<AkcijaSudionik>>($"api/Akcije/polaznici/{id}");
+        var akcijaResult = _httpClient.GetFromJsonAsync<IEnumerable<AkcijaSudionik>>($"/polaznici/{id}");
         Console.WriteLine(akcijaResult);
 
         if (akcijaResult.Result!.Any())
