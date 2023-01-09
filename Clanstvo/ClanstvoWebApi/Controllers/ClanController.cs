@@ -48,10 +48,10 @@ public class ClanController : ControllerBase
     }
 
     
-    [HttpGet("/api/[controller]/NisuPlatili")]
-    public ActionResult<IEnumerable<Clan_NijePlatio>> GetNisuPlatili()
+    [HttpGet("/api/[controller]/SviNisuPlatili")]
+    public ActionResult<IEnumerable<Clan_NijePlatio>> GetSviNisuPlatili()
     {
-        var clanResults = _clanRepository.GetNisuPlatili()
+        var clanResults = _clanRepository.GetSviNisuPlatili()
             .Map(clan => clan.Select(DtoMapping.ToAggregateDto2));
 
         return clanResults
@@ -59,10 +59,35 @@ public class ClanController : ControllerBase
             : Problem(clanResults.Message, statusCode: 500);
     }
 
-    [HttpGet("/api/[controller]/RangoviZasluga")]
-    public ActionResult<IEnumerable<Clan_NijePlatio>> GetRangoviZasluga()
+
+    
+    [HttpGet("/api/[controller]/NisuPlatili")]
+    public ActionResult<IEnumerable<Clan_NijePlatio>> GetNisuPlatili([FromQuery] int[] ids)
     {
-        var clanResults = _clanRepository.GetRangoviZasluga()
+        var clanResults = _clanRepository.GetNisuPlatili(ids)
+            .Map(clan => clan.Select(DtoMapping.ToAggregateDto2));
+
+        return clanResults
+            ? Ok(clanResults.Data)
+            : Problem(clanResults.Message, statusCode: 500);
+    }
+    
+
+    [HttpGet("/api/[controller]/SviRangoviZasluga")]
+    public ActionResult<IEnumerable<Clan_RangZasluga>> GetSviRangoviZasluga()
+    {
+        var clanResults = _clanRepository.GetSviRangoviZasluga()
+            .Map(clan => clan.Select(DtoMapping.ToAggregateDto3));
+
+        return clanResults
+            ? Ok(clanResults.Data)
+            : Problem(clanResults.Message, statusCode: 500);
+    }
+
+    [HttpGet("/api/[controller]/RangoviZasluga")]
+    public ActionResult<IEnumerable<Clan_RangZasluga>> GetRangoviZasluga([FromQuery] int[] ids)
+    {
+        var clanResults = _clanRepository.GetRangoviZasluga(ids)
             .Map(clan => clan.Select(DtoMapping.ToAggregateDto3));
 
         return clanResults
@@ -309,4 +334,69 @@ public class ClanController : ControllerBase
             ? Accepted()
             : Problem(updateResult.Message, statusCode: 500);
     }
+
+    [HttpPost("DodajMaramu/{clanId}")]
+    public IActionResult DodajMaramu(int clanId, string mjestoMarama)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var clanResult = _clanRepository.Get(clanId);
+        if (clanResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (clanResult.IsException)
+        {
+            return Problem(clanResult.Message, statusCode: 500);
+        }
+
+        var clan = clanResult.Data;
+
+        clan.DodajMaramu(
+            mjestoMarama
+            );
+
+        var updateResult = _clanRepository.Update(clan);
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
+    [HttpPost("UkloniMaramu/{clanId}")]
+    public IActionResult UkloniMaramu(int clanId)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var clanResult = _clanRepository.Get(clanId);
+        if (clanResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (clanResult.IsException)
+        {
+            return Problem(clanResult.Message, statusCode: 500);
+        }
+
+        var clan = clanResult.Data;
+
+
+        if (!clan.UkoloniMaramu())
+        {
+            return NotFound($"Couldn't find clan with id {clanId}");
+        }
+
+        var updateResult = _clanRepository.Update(clan);
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
 }

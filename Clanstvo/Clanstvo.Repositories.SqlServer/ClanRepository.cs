@@ -69,8 +69,9 @@ public class ClanRepository : IClanRepository
         try
         {
             var model = _dbContext.Clan
-                .Where(clan => clan.Clanarina.Any(clanarina => clanarina.Placenost == false))
-                .Include(clan => clan.Clanarina.Where(clanarina => clanarina.Placenost == false))
+                //.Where(clan => clan.Clanarina.Any(clanarina => clanarina.Placenost == false))
+                //.Include(clan => clan.Clanarina.Where(clanarina => clanarina.Placenost == false))
+                .Include(clan => clan.Clanarina)
                 .AsNoTracking()
                 .FirstOrDefault(clan => clan.Id.Equals(id))?
                 .ToDomain(); // give me the first or null; substitute for .Where()
@@ -174,13 +175,14 @@ public class ClanRepository : IClanRepository
         
     }
 
-    public Result<IEnumerable<Clan>> GetNisuPlatili()
+    public Result<IEnumerable<Clan>> GetSviNisuPlatili()
     {
         try
         {
             var models = _dbContext.Clan
-                .Where(clan => clan.Clanarina.Any(clanarina => clanarina.Placenost == false))
-                .Include(clan => clan.Clanarina.Where(clanarina => clanarina.Placenost == false))
+                //.Where(clan => clan.Clanarina.Any(clanarina => clanarina.Placenost == false))
+                //.Include(clan => clan.Clanarina.Where(clanarina => clanarina.Placenost == false))
+                .Include(clan => clan.Clanarina)
                 .AsNoTracking()
                 .Select(Mapping.ToDomain);
 
@@ -192,11 +194,50 @@ public class ClanRepository : IClanRepository
         }
     }
 
-    public Result<IEnumerable<Clan>> GetRangoviZasluga()
+    public Result<IEnumerable<Clan>> GetNisuPlatili(int[] ids)
     {
         try
         {
             var models = _dbContext.Clan
+                .Where(clan => ids.Contains(clan.Id))
+                //.Where(clan => clan.Clanarina.Any(clanarina => clanarina.Placenost == false))
+                //.Include(clan => clan.Clanarina.Where(clanarina => clanarina.Placenost == false))
+                .Include(clan => clan.Clanarina)
+                .AsNoTracking()
+                .Select(Mapping.ToDomain);
+
+            return Results.OnSuccess(models);
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<Clan>>(e);
+        }
+    }
+
+    public Result<IEnumerable<Clan>> GetSviRangoviZasluga()
+    {
+        try
+        {
+            var models = _dbContext.Clan
+                .Include(clan => clan.ClanRangZasluga)
+                .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
+                .AsNoTracking()
+                .Select(Mapping.ToDomain);
+
+            return Results.OnSuccess(models);
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<Clan>>(e);
+        }
+    }
+
+    public Result<IEnumerable<Clan>> GetRangoviZasluga(int[] ids)
+    {
+        try
+        {
+            var models = _dbContext.Clan
+                .Where(clan => ids.Contains(clan.Id))
                 .Include(clan => clan.ClanRangZasluga)
                 .ThenInclude(clanRangZasluga => clanRangZasluga.RangZasluga)
                 .AsNoTracking()
