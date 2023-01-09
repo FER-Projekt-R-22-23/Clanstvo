@@ -6,6 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using Clanstvo.Providers;
 using Clanstvo.Providers.Http;
+using Clanstvo.Providers.Http.Options;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,23 +28,12 @@ builder.Services.AddTransient<IRangStarostRepository, RangStarostRepository>();
 builder.Services.AddTransient<IRangZaslugaRepository, RangZaslugaRepository>();
 builder.Services.AddTransient<IAkcijeSkoleProvider, AkcijeSkoleProvider>();
 
+var akcijeSkoleProviderOptions = configuration.GetSection("AkcijeSkoleProviderOptions").Get<AkcijeSkoleProviderOptions>();
+
+builder.Services.AddTransient<AkcijeSkoleProviderOptions>(services => akcijeSkoleProviderOptions);
+
 HttpClientHandler clientHandler = new HttpClientHandler();
 clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-
-builder.Services.AddHttpClient("Udruge", client =>
-{
-    //client.BaseAddress = new Uri(builder.Configuration
-    //        .GetSection("RemoteServices").GetValue<String>("Udruge"));
-
-    client.BaseAddress = new Uri("https://localhost:7080");
-}).ConfigurePrimaryHttpMessageHandler(x => clientHandler);
-
-builder.Services.AddHttpClient("AkcijeSkole", client =>
-{
-    //client.BaseAddress = new Uri(builder.Configuration
-    //    .GetSection("RemoteServices").GetValue<String>("AkcijeSkole"));
-    client.BaseAddress = new Uri("https://localhost:7080");
-}).ConfigurePrimaryHttpMessageHandler(x => clientHandler);
 
 // Add services to the container.
 

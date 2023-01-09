@@ -5,6 +5,6 @@ namespace Clanstvo.Providers;
 
 public interface IAkcijeSkoleProvider
 {
-    public Result<IEnumerable<Skola>> GetSkoleClana(int id);
-    public Result<IEnumerable<Akcija>> GetAkcijeClana(int id);
+    public Task<Result<IEnumerable<Skola>>> GetSkoleClana(int id);
+    public Task<Result<IEnumerable<Akcija>>> GetAkcijeClana(int id);
 }
