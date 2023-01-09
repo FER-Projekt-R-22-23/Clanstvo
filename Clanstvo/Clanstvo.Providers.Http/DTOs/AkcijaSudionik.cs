@@ -7,7 +7,7 @@ namespace Clanstvo.Providers.Http.DTOs
     {
         public int IdAkcije { get; set; }
 
-        public string Naziv { get; set; } = String.Empty;
+        public string Naziv { get; set; } = string.Empty;
 
 
 

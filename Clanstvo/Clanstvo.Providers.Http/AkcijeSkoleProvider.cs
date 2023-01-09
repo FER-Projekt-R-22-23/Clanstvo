@@ -17,30 +17,30 @@ public class AkcijeSkoleProvider : IAkcijeSkoleProvider
     
     public Result<IEnumerable<Akcija>> GetAkcijeClana(int id)
     {
-        var akcijaResult = _httpClient.GetFromJsonAsync<IEnumerable<AkcijaSudionik>>("/polaznici/");
+        var akcijaResult = _httpClient.GetFromJsonAsync<IEnumerable<AkcijaSudionik>>("api/Akcije/polaznici/");
 
-        if (akcijaResult.Result != null)
+        if (akcijaResult.Result!.Any())
         {
-            var akcije = akcijaResult.Result.Select(c => AkcijaSudionik.DtoMapping.ToDomain(c));
+            var akcije = akcijaResult.Result!.Select(a => AkcijaSudionik.DtoMapping.ToDomain(a));
 
             return Results.OnSuccess(akcije);
         }
 
-        return Results.OnFailure<IEnumerable<Akcija>>("Clanovi nemaju neplacenih clanarina");
+        return Results.OnFailure<IEnumerable<Akcija>>("Clan nema zabiljezenih akcija");
     }
 
     public Result<IEnumerable<Skola>> GetSkoleClana(int id)
     {
-        var skolaResult = _httpClient.GetFromJsonAsync<IEnumerable<SkolaSudionik>>("/polaznici/");
+        var skolaResult = _httpClient.GetFromJsonAsync<IEnumerable<SkolaSudionik>>($"/polaznik/{id}");
 
-        if (skolaResult.Result != null)
+        if (skolaResult.Result!.Any())
         {
-            var skole = skolaResult.Result.Select(c => SkolaSudionik.DtoMapping.ToDomain(c));
+            var skole = skolaResult.Result!.Select(s => SkolaSudionik.DtoMapping.ToDomain(s));
 
             return Results.OnSuccess(skole);
         }
 
-        return Results.OnFailure<IEnumerable<Skola>>("Clanovi nemaju neplacenih clanarina");
+        return Results.OnFailure<IEnumerable<Skola>>("Clan nema zabiljezenih skola");
     }
 
 }

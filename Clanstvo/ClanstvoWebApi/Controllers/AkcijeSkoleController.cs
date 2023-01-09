@@ -9,17 +9,17 @@ namespace ClanstvoWebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AkcijeController : ControllerBase
+public class AkcijeSkoleController : ControllerBase
 {
     private readonly IAkcijeSkoleProvider _akcijeSkoleProvider;
 
-    public AkcijeController(IAkcijeSkoleProvider akcijeSkoleProvider)
+    public AkcijeSkoleController(IAkcijeSkoleProvider akcijeSkoleProvider)
     {
         _akcijeSkoleProvider = akcijeSkoleProvider;
     }
 
     [HttpGet("Akcije")]
-    public ActionResult<IEnumerable<AkcijaSudionik>> GetAkcijeSudionika([FromQuery] int id)
+    public ActionResult<IEnumerable<AkcijaSudionik>> GetAkcijeSudionika(int id)
     {
         var akcijaResult = _akcijeSkoleProvider.GetAkcijeClana(id);
 
@@ -31,7 +31,7 @@ public class AkcijeController : ControllerBase
     }
 
     [HttpGet("Skole")]
-    public ActionResult<IEnumerable<SkolaSudionik>> GetSkoleSudionika([FromQuery] int id)
+    public ActionResult<IEnumerable<SkolaSudionik>> GetSkoleSudionika(int id)
     {
         var skolaResult = _akcijeSkoleProvider.GetSkoleClana(id);
 
