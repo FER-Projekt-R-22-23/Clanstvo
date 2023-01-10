@@ -7,6 +7,7 @@ using BaseLibrary;
 using System;
 using System.Data;
 using Clanstvo.Repositories.SqlServer;
+using Clanstvo.Providers;
 
 namespace ClanstvoWebApi.Controllers;
 [Route("api/[controller]")]
@@ -14,11 +15,13 @@ namespace ClanstvoWebApi.Controllers;
 public class ClanController : ControllerBase
 {
     private readonly IClanRepository _clanRepository;
+    private readonly IAkcijeSkoleProvider _akcijeSkoleProvider;
 
 
-    public ClanController(IClanRepository clanRepository)
+    public ClanController(IClanRepository clanRepository, IAkcijeSkoleProvider akcijeSkoleProvider)
     {
         _clanRepository = clanRepository;
+        _akcijeSkoleProvider = akcijeSkoleProvider;
     }
 
     // GET: api/Clanovi
@@ -256,11 +259,16 @@ public class ClanController : ControllerBase
         }
 
         var clan = clanResult.Data;
+        var brojAkcija = _akcijeSkoleProvider.GetAkcijeClana(clanId).Result.Data.ToList().Count;
 
-        clan.DodajRangZasluga(
+        if(brojAkcija > 0)
+        {
+            clan.DodajRangZasluga(
             dodjelaZasluga.RangZasluga.ToDomain(),
             dodjelaZasluga.Datum
             );
+        }
+        
 
         var updateResult = _clanRepository.UpdateAggregate(clan);
 
