@@ -73,7 +73,7 @@ namespace ClanstvoWebApi.Controllers
                 ? AcceptedAtAction("EditRangZasluga", rangZasluga)
                 : Problem(updateResult.Message, statusCode: 500);
         }
-
+        
         // POST: api/RangZasluga
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
